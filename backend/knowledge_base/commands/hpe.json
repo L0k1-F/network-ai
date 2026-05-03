@@ -1,0 +1,105 @@
+{
+  "vendor": "HPE/Aruba",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "进入配置模式", "syntax": "configure [terminal]", "example": "configure", "description": "进入全局配置模式", "mode": "特权模式"},
+        {"name": "创建VLAN", "syntax": "vlan <vlan_id>\n  name <vlan_name>", "example": "vlan 10\n  name Management", "description": "创建VLAN并设置名称", "mode": "全局配置"},
+        {"name": "接口Access模式", "syntax": "vlan access <vlan_id>", "example": "interface 1/1/1\n  vlan access 10", "description": "将接口设为Access模式并入VLAN", "mode": "接口配置"},
+        {"name": "接口Trunk模式", "syntax": "vlan trunk native <vlan_id>\n  vlan trunk allowed <vlan_list>", "example": "vlan trunk native 1\n  vlan trunk allowed 10,20,30", "description": "将接口设为Trunk模式", "mode": "接口配置"},
+        {"name": "三层接口", "syntax": "routing\n  ip address <ip>/<prefix>", "example": "routing\n  ip address 10.1.1.1/30", "description": "将接口启用三层路由（替代 switchport mode）", "mode": "接口配置"},
+        {"name": "查看VLAN", "syntax": "show vlan [<vlan_id>|summary]", "example": "show vlan summary", "description": "查看VLAN信息", "mode": "特权模式"},
+        {"name": "查看接口VLAN", "syntax": "show vlan port <interface>", "example": "show vlan port 1/1/1", "description": "查看指定端口VLAN信息", "mode": "特权模式"}
+      ],
+      "keywords": ["vlan", "access", "trunk", "native", "allowed", "routing", "vlan port"]
+    },
+    "stp": {
+      "name": "STP/MSTP配置",
+      "commands": [
+        {"name": "启用STP", "syntax": "spanning-tree", "example": "spanning-tree", "description": "全局启用生成树", "mode": "全局配置"},
+        {"name": "设置模式", "syntax": "spanning-tree mode {stp|rstp|mstp}", "example": "spanning-tree mode rstp", "description": "选择STP模式", "mode": "全局配置"},
+        {"name": "设置优先级", "syntax": "spanning-tree priority <0-15>", "example": "spanning-tree priority 4", "description": "设置桥优先级（HPE使用0-15范围）", "mode": "全局配置"},
+        {"name": "边缘端口", "syntax": "spanning-tree port-type admin-edge", "example": "spanning-tree port-type admin-edge", "description": "将接口设为边缘端口", "mode": "接口配置"},
+        {"name": "BPDU保护", "syntax": "spanning-tree bpdu-protection", "example": "spanning-tree bpdu-protection", "description": "启用BPDU保护", "mode": "接口配置"},
+        {"name": "根保护", "syntax": "spanning-tree root-guard", "example": "spanning-tree root-guard", "description": "在接口启用根保护", "mode": "接口配置"},
+        {"name": "查看STP", "syntax": "show spanning-tree [detail]", "example": "show spanning-tree detail", "description": "查看生成树状态", "mode": "特权模式"}
+      ],
+      "keywords": ["spanning-tree", "rstp", "mstp", "边缘端口", "bpdu-protection", "root-guard", "admin-edge"]
+    },
+    "aggregation": {
+      "name": "链路聚合",
+      "commands": [
+        {"name": "创建LAG", "syntax": "interface lag <id>", "example": "interface lag 1", "description": "创建LAG逻辑接口（ID号范围1-256）", "mode": "全局配置"},
+        {"name": "加入LAG", "syntax": "lag <id>", "example": "interface 1/1/1\n  lag 1", "description": "将物理接口加入LAG组", "mode": "接口配置"},
+        {"name": "LACP模式", "syntax": "lacp mode {active|passive}", "example": "lacp mode active", "description": "设置LACP协商模式", "mode": "LAG接口配置"},
+        {"name": "负载均衡", "syntax": "hash-type {l2-src-dst|l3-src-dst|l4-src-dst}", "example": "hash-type l3-src-dst", "description": "配置LAG负载均衡算法", "mode": "LAG接口配置"},
+        {"name": "查看LAG", "syntax": "show lacp aggregates", "example": "show lacp aggregates", "description": "查看链路聚合状态", "mode": "特权模式"}
+      ],
+      "keywords": ["lag", "lacp", "链路聚合", "hash-type", "lag id", "聚合"]
+    },
+    "routing": {
+      "name": "路由协议",
+      "commands": [
+        {"name": "静态路由", "syntax": "ip route <dest_ip>/<prefix> <next_hop> [<distance>]", "example": "ip route 192.168.2.0/24 10.1.1.1", "description": "添加静态路由", "mode": "全局配置"},
+        {"name": "默认路由", "syntax": "ip route 0.0.0.0/0 <next_hop>", "example": "ip route 0.0.0.0/0 10.1.1.1", "description": "配置默认路由", "mode": "全局配置"},
+        {"name": "启用OSPF", "syntax": "router ospf <process_id>\n  router-id <id>", "example": "router ospf 1\n  router-id 1.1.1.1", "description": "创建OSPF进程", "mode": "全局配置"},
+        {"name": "宣告OSPF网络", "syntax": "area <area_id>\n  network <ip> <wildcard>", "example": "area 0.0.0.0\n  network 10.1.1.0 0.0.0.255", "description": "宣告网络到OSPF区域", "mode": "OSPF路由配置"},
+        {"name": "被动接口", "syntax": "passive-interface <interface>", "example": "passive-interface vlan10", "description": "OSPF被动接口", "mode": "OSPF路由配置"},
+        {"name": "启用BGP", "syntax": "router bgp <as_number>\n  bgp router-id <id>", "example": "router bgp 65001\n  bgp router-id 1.1.1.1", "description": "启用BGP", "mode": "全局配置"},
+        {"name": "BGP邻居", "syntax": "neighbor <ip> remote-as <as>", "example": "neighbor 10.1.1.2 remote-as 65002", "description": "配置BGP对等体", "mode": "BGP路由配置"},
+        {"name": "查看路由表", "syntax": "show ip route", "example": "show ip route", "description": "查看路由表", "mode": "特权模式"}
+      ],
+      "keywords": ["静态路由", "ospf", "bgp", "router-id", "被动接口", "路由表", "bgp router-id"]
+    },
+    "acl": {
+      "name": "ACL/安全配置",
+      "commands": [
+        {"name": "创建IPv4 ACL", "syntax": "access-list ip <acl_name>\n  <seq> permit|deny <protocol> <src> <dst>", "example": "access-list ip MGMT_ACL\n  10 permit tcp 192.168.99.0/24 any eq 22", "description": "创建命名IPv4 ACL", "mode": "全局配置"},
+        {"name": "创建MAC ACL", "syntax": "access-list mac <acl_name>", "example": "access-list mac MAC_FILTER", "description": "创建二层MAC ACL", "mode": "全局配置"},
+        {"name": "接口应用ACL", "syntax": "apply access-list ip <acl_name> {in|out}", "example": "apply access-list ip MGMT_ACL in", "description": "在接口方向应用ACL", "mode": "接口配置"},
+        {"name": "端口安全", "syntax": "port-access client-limit <max_mac>", "example": "port-access client-limit 5", "description": "限制接口学习的MAC地址数", "mode": "接口配置"},
+        {"name": "查看ACL", "syntax": "show access-list [<acl_name>] [config]", "example": "show access-list ip MGMT_ACL config", "description": "查看ACL规则", "mode": "特权模式"}
+      ],
+      "keywords": ["access-list", "acl", "apply access-list", "端口安全", "port-access", "mac acl", "permit", "deny"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "启用DHCP服务器", "syntax": "dhcp-server", "example": "dhcp-server", "description": "全局启用DHCP服务器", "mode": "全局配置"},
+        {"name": "创建地址池", "syntax": "dhcp-server pool <name>\n  network <ip> mask <mask>\n  range <start> <end>\n  default-router <ip>\n  dns-server <ip>", "example": "dhcp-server pool VLAN10\n  network 192.168.1.0 mask 255.255.255.0\n  range 192.168.1.10 192.168.1.250", "description": "创建DHCP地址池", "mode": "全局配置"},
+        {"name": "排除地址", "syntax": "dhcp-server excluded-address <start> [<end>]", "example": "dhcp-server excluded-address 192.168.1.1 192.168.1.10", "description": "排除指定地址范围", "mode": "全局配置"},
+        {"name": "DHCP中继", "syntax": "dhcp-relay", "example": "dhcp-relay\n  dhcp-relay server <ip>", "description": "启用DHCP中继", "mode": "接口配置或全局"},
+        {"name": "DHCP Snooping", "syntax": "dhcp-snooping\n  dhcp-snooping trust", "example": "dhcp-snooping\n  dhcp-snooping trust", "description": "启用DHCP Snooping并设置Trust端口", "mode": "全局配置+接口配置"},
+        {"name": "查看DHCP", "syntax": "show dhcp-server [leases|pool <name>]", "example": "show dhcp-server leases", "description": "查看DHCP分配情况", "mode": "特权模式"}
+      ],
+      "keywords": ["dhcp", "dhcp-server", "地址池", "dhcp-relay", "dhcp-snooping", "排除地址"]
+    },
+    "vrrp": {
+      "name": "VRRP配置",
+      "commands": [
+        {"name": "创建VRRP", "syntax": "vrrp <group_id> address-family ipv4\n  address <virtual_ip>\n  priority <1-255>\n  no shutdown", "example": "vrrp 1 address-family ipv4\n  address 192.168.1.254\n  priority 120\n  no shutdown", "description": "创建VRRP备份组", "mode": "接口配置"},
+        {"name": "抢占模式", "syntax": "preempt [delay minimum <seconds>]", "example": "preempt delay minimum 30", "description": "启用VRRP抢占", "mode": "VRRP配置"},
+        {"name": "查看VRRP", "syntax": "show vrrp [<group_id>|detail]", "example": "show vrrp detail", "description": "查看VRRP状态", "mode": "特权模式"}
+      ],
+      "keywords": ["vrrp", "虚拟网关", "vrrp group", "优先级", "抢占", "address-family"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置主机名", "syntax": "hostname <name>", "example": "hostname Core-SW-01", "description": "设置设备主机名", "mode": "全局配置"},
+        {"name": "配置管理接口", "syntax": "interface mgmt\n  ip dhcp 或 ip address <ip>/<prefix>", "example": "interface mgmt\n  ip address 192.168.1.1/24", "description": "配置带外管理口（HPE OOBM接口名为mgmt）", "mode": "全局配置→接口配置"},
+        {"name": "配置SSH", "syntax": "ssh server vrf mgmt\n  user <user> password", "example": "ssh server vrf mgmt", "description": "启用SSH服务器", "mode": "全局配置"},
+        {"name": "创建用户", "syntax": "user <name> group administrators password", "example": "user admin group administrators password plaintext P@ssw0rd", "description": "创建管理员用户", "mode": "全局配置"},
+        {"name": "配置NTP", "syntax": "ntp server <ip> [key <id>] [version <n>]", "example": "ntp server 192.168.1.100 iburst", "description": "配置NTP时间同步", "mode": "全局配置"},
+        {"name": "配置SNMP", "syntax": "snmp-server community <community>", "example": "snmp-server community public", "description": "配置SNMP团体字", "mode": "全局配置"},
+        {"name": "保存配置", "syntax": "write memory", "example": "write memory", "description": "保存当前配置", "mode": "特权模式"},
+        {"name": "查看运行配置", "syntax": "show running-config [structured|interface <intf>]", "example": "show running-config structured", "description": "查看运行配置（structured=JSON格式）", "mode": "特权模式"},
+        {"name": "查看接口", "syntax": "show interface [<interface>] [brief|physical]", "example": "show interface brief", "description": "查看接口状态", "mode": "特权模式"},
+        {"name": "查看LLDP", "syntax": "show lldp neighbor-info [detail]", "example": "show lldp neighbor-info detail", "description": "查看LLDP邻居信息", "mode": "特权模式"},
+        {"name": "查看日志", "syntax": "show log [<log_name>] [reverse] [last <lines>]", "example": "show log reverse last 50", "description": "查看系统日志", "mode": "特权模式"}
+      ],
+      "keywords": ["hostname", "管理", "mgmt", "ssh", "ntp", "snmp", "保存", "running-config", "lldp", "日志", "oobm"]
+    }
+  }
+}

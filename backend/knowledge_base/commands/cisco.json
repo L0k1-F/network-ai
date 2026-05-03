@@ -1,0 +1,128 @@
+{
+  "vendor": "Cisco",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "进入特权模式", "syntax": "enable", "example": "enable", "description": "从用户模式进入特权模式", "mode": "用户模式"},
+        {"name": "进入全局配置模式", "syntax": "configure terminal", "example": "configure terminal", "description": "从特权模式进入全局配置模式", "mode": "特权模式"},
+        {"name": "创建VLAN", "syntax": "vlan <vlan_id>", "example": "vlan 10\n  name Management", "description": "创建VLAN并进入VLAN配置子模式，可设置名称", "mode": "全局配置"},
+        {"name": "批量创建VLAN", "syntax": "vlan <start_id>-<end_id>", "example": "vlan 10,20,30-35", "description": "批量创建VLAN，支持逗号和范围语法", "mode": "全局配置"},
+        {"name": "接口设为Access模式", "syntax": "switchport mode access", "example": "interface GigabitEthernet0/1\n  switchport mode access", "description": "将接口设置为Access模式", "mode": "接口配置"},
+        {"name": "Access端口加入VLAN", "syntax": "switchport access vlan <vlan_id>", "example": "switchport access vlan 10", "description": "将Access端口划入指定VLAN", "mode": "接口配置"},
+        {"name": "接口设为Trunk模式", "syntax": "switchport mode trunk", "example": "switchport mode trunk", "description": "将接口设置为Trunk模式", "mode": "接口配置"},
+        {"name": "Trunk允许VLAN通过", "syntax": "switchport trunk allowed vlan <vlan_list>", "example": "switchport trunk allowed vlan 10,20,30", "description": "设置Trunk端口允许通过的VLAN列表", "mode": "接口配置"},
+        {"name": "设置Native VLAN", "syntax": "switchport trunk native vlan <vlan_id>", "example": "switchport trunk native vlan 1", "description": "设置Trunk端口的Native VLAN", "mode": "接口配置"},
+        {"name": "启用VTP（客户端）", "syntax": "vtp mode {server|client|transparent}", "example": "vtp mode client\n  vtp domain cisco.local", "description": "配置VTP域和模式（Cisco私有VLAN同步协议）", "mode": "全局配置"},
+        {"name": "查看VLAN", "syntax": "show vlan [brief|id <vlan_id>]", "example": "show vlan brief", "description": "查看VLAN信息", "mode": "特权模式"},
+        {"name": "查看接口Trunk状态", "syntax": "show interfaces trunk", "example": "show interfaces trunk", "description": "查看所有Trunk接口状态", "mode": "特权模式"}
+      ],
+      "keywords": ["vlan", "access", "trunk", "switchport", "vtp", "native vlan", "allowed vlan"]
+    },
+    "stp": {
+      "name": "STP/MSTP配置",
+      "commands": [
+        {"name": "设置STP模式", "syntax": "spanning-tree mode {pvst|rapid-pvst|mst}", "example": "spanning-tree mode rapid-pvst", "description": "选择生成树模式（Cisco默认PVST+）", "mode": "全局配置"},
+        {"name": "启用STP", "syntax": "spanning-tree vlan <vlan_list>", "example": "spanning-tree vlan 10,20", "description": "为指定VLAN启用生成树", "mode": "全局配置"},
+        {"name": "设置VLAN根桥", "syntax": "spanning-tree vlan <vlan_id> root primary", "example": "spanning-tree vlan 10 root primary", "description": "将交换机设为指定VLAN的根桥", "mode": "全局配置"},
+        {"name": "设置优先级", "syntax": "spanning-tree vlan <vlan_id> priority <0-61440 step 4096>", "example": "spanning-tree vlan 10 priority 4096", "description": "手动设置VLAN的STP优先级", "mode": "全局配置"},
+        {"name": "启用PortFast", "syntax": "spanning-tree portfast", "example": "spanning-tree portfast", "description": "将接口设为PortFast（边缘端口），立即转发", "mode": "接口配置"},
+        {"name": "启用BPDU Guard", "syntax": "spanning-tree bpduguard enable", "example": "spanning-tree bpduguard enable", "description": "全局启用BPDU Guard", "mode": "全局配置"},
+        {"name": "启用BPDU Filter", "syntax": "spanning-tree portfast bpdufilter default", "example": "spanning-tree portfast bpdufilter default", "description": "PortFast接口不发送BPDU", "mode": "全局配置"},
+        {"name": "配置MST", "syntax": "spanning-tree mst configuration", "example": "spanning-tree mst configuration\n  name REGION1\n  revision 1\n  instance 1 vlan 10,20", "description": "进入MST配置子模式", "mode": "全局配置"},
+        {"name": "查看STP", "syntax": "show spanning-tree [vlan <vlan_id>]", "example": "show spanning-tree vlan 10", "description": "查看生成树状态", "mode": "特权模式"}
+      ],
+      "keywords": ["stp", "pvst", "rapid-pvst", "mst", "根桥", "portfast", "bpdu guard", "spanning-tree"]
+    },
+    "aggregation": {
+      "name": "链路聚合",
+      "commands": [
+        {"name": "创建Port-Channel", "syntax": "interface Port-channel <id>", "example": "interface Port-channel 1", "description": "创建逻辑聚合接口", "mode": "全局配置"},
+        {"name": "加入Port-Channel", "syntax": "channel-group <id> mode {active|passive|on|desirable|auto}", "example": "channel-group 1 mode active", "description": "将物理接口加入聚合组（active=主动LACP，on=手工）", "mode": "接口配置"},
+        {"name": "设置负载均衡", "syntax": "port-channel load-balance {dst-ip|dst-mac|src-dst-ip|src-dst-mac}", "example": "port-channel load-balance src-dst-ip", "description": "配置Port-Channel负载均衡算法", "mode": "全局配置"},
+        {"name": "设置LACP优先级", "syntax": "lacp system-priority <1-65535>", "example": "lacp system-priority 100", "description": "设置LACP系统优先级", "mode": "全局配置"},
+        {"name": "查看EtherChannel", "syntax": "show etherchannel [summary|port-channel]", "example": "show etherchannel summary", "description": "查看EtherChannel聚合状态", "mode": "特权模式"}
+      ],
+      "keywords": ["etherchannel", "port-channel", "lacp", "pagp", "链路聚合", "channel-group", "负载均衡"]
+    },
+    "routing": {
+      "name": "路由协议",
+      "commands": [
+        {"name": "启用IP路由", "syntax": "ip routing", "example": "ip routing", "description": "启用三层路由功能（三层交换机需要）", "mode": "全局配置"},
+        {"name": "配置静态路由", "syntax": "ip route <dest_ip> <mask> <next_hop> [<ad>]", "example": "ip route 192.168.2.0 255.255.255.0 10.1.1.1", "description": "添加静态路由", "mode": "全局配置"},
+        {"name": "配置默认路由", "syntax": "ip route 0.0.0.0 0.0.0.0 <next_hop>", "example": "ip route 0.0.0.0 0.0.0.0 10.1.1.1", "description": "配置默认路由", "mode": "全局配置"},
+        {"name": "启用OSPF", "syntax": "router ospf <process_id>", "example": "router ospf 1\n  router-id 1.1.1.1", "description": "创建OSPF进程并指定Router ID", "mode": "全局配置"},
+        {"name": "宣告OSPF网络", "syntax": "network <ip> <wildcard_mask> area <area_id>", "example": "network 10.1.1.0 0.0.0.255 area 0", "description": "在OSPF中宣告网络", "mode": "OSPF路由配置"},
+        {"name": "OSPF被动接口", "syntax": "passive-interface <interface>", "example": "passive-interface GigabitEthernet0/1", "description": "将接口设为被动，不发送Hello包", "mode": "OSPF路由配置"},
+        {"name": "OSPF默认路由下发", "syntax": "default-information originate", "example": "default-information originate always", "description": "向OSPF域下发默认路由", "mode": "OSPF路由配置"},
+        {"name": "启用BGP", "syntax": "router bgp <as_number>", "example": "router bgp 65001", "description": "启用BGP并设置AS号", "mode": "全局配置"},
+        {"name": "配置BGP邻居", "syntax": "neighbor <ip> remote-as <as>", "example": "neighbor 10.1.1.2 remote-as 65002", "description": "配置BGP对等体", "mode": "BGP路由配置"},
+        {"name": "开启SVI接口", "syntax": "interface Vlan<id>\n  ip address <ip> <mask>\n  no shutdown", "example": "interface Vlan99\n  ip address 192.168.99.1 255.255.255.0\n  no shutdown", "description": "配置SVI三层VLAN接口", "mode": "全局配置→接口配置"},
+        {"name": "查看路由表", "syntax": "show ip route", "example": "show ip route static", "description": "查看IP路由表", "mode": "特权模式"},
+        {"name": "查看OSPF邻居", "syntax": "show ip ospf neighbor", "example": "show ip ospf neighbor", "description": "查看OSPF邻居状态", "mode": "特权模式"}
+      ],
+      "keywords": ["ospf", "bgp", "静态路由", "默认路由", "svi", "router-id", "passive-interface", "路由表"]
+    },
+    "acl": {
+      "name": "ACL/安全配置",
+      "commands": [
+        {"name": "创建标准ACL", "syntax": "access-list <1-99> permit|deny <src_ip> <wildcard>", "example": "access-list 10 permit 192.168.1.0 0.0.0.255", "description": "创建标准ACL（仅匹配源IP）", "mode": "全局配置"},
+        {"name": "创建扩展ACL", "syntax": "access-list <100-199> permit|deny <protocol> <src> <dst>", "example": "access-list 100 permit tcp 192.168.1.0 0.0.0.255 any eq 80", "description": "创建扩展ACL（可匹配五元组）", "mode": "全局配置"},
+        {"name": "命名ACL", "syntax": "ip access-list {standard|extended} <name>", "example": "ip access-list extended BLOCK_WEB", "description": "创建命名ACL", "mode": "全局配置"},
+        {"name": "接口应用ACL", "syntax": "ip access-group <acl> {in|out}", "example": "ip access-group 100 in", "description": "在接口方向应用ACL", "mode": "接口配置"},
+        {"name": "端口安全", "syntax": "switchport port-security", "example": "switchport port-security\n  switchport port-security maximum 5\n  switchport port-security mac-address sticky", "description": "启用端口安全，限制MAC地址学习", "mode": "接口配置"},
+        {"name": "VTY ACL", "syntax": "access-class <acl> in", "example": "line vty 0 4\n  access-class 10 in", "description": "限制Telnet/SSH登录源地址", "mode": "线路配置"},
+        {"name": "查看ACL", "syntax": "show access-lists [<acl>]", "example": "show access-lists 100", "description": "查看ACL规则", "mode": "特权模式"},
+        {"name": "查看端口安全", "syntax": "show port-security [interface <intf>]", "example": "show port-security", "description": "查看端口安全状态", "mode": "特权模式"}
+      ],
+      "keywords": ["acl", "access-list", "access-group", "端口安全", "port-security", "permit", "deny"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "启用DHCP服务", "syntax": "service dhcp", "example": "service dhcp", "description": "全局启用DHCP服务", "mode": "全局配置"},
+        {"name": "创建DHCP地址池", "syntax": "ip dhcp pool <name>", "example": "ip dhcp pool VLAN10", "description": "创建DHCP地址池", "mode": "全局配置"},
+        {"name": "配置地址池网段", "syntax": "network <ip> <mask>", "example": "network 192.168.1.0 255.255.255.0", "description": "设置地址池网段", "mode": "DHCP地址池配置"},
+        {"name": "配置默认网关", "syntax": "default-router <ip>", "example": "default-router 192.168.1.1", "description": "设置分配客户端的默认网关", "mode": "DHCP地址池配置"},
+        {"name": "配置DNS", "syntax": "dns-server <ip> [<ip2>]", "example": "dns-server 8.8.8.8 114.114.114.114", "description": "设置分配客户端的DNS", "mode": "DHCP地址池配置"},
+        {"name": "设置租约时间", "syntax": "lease {<days>|infinite}", "example": "lease 7", "description": "设置IP租约期限（天）", "mode": "DHCP地址池配置"},
+        {"name": "排除地址", "syntax": "ip dhcp excluded-address <start_ip> [<end_ip>]", "example": "ip dhcp excluded-address 192.168.1.1 192.168.1.10", "description": "排除不分配的地址范围", "mode": "全局配置"},
+        {"name": "启用DHCP Snooping", "syntax": "ip dhcp snooping\n  ip dhcp snooping vlan <vlan_id>", "example": "ip dhcp snooping\n  ip dhcp snooping vlan 10", "description": "启用DHCP Snooping防止非法DHCP", "mode": "全局配置"},
+        {"name": "设置Trust端口", "syntax": "ip dhcp snooping trust", "example": "ip dhcp snooping trust", "description": "将端口设为DHCP Snooping信任端口", "mode": "接口配置"},
+        {"name": "查看DHCP绑定", "syntax": "show ip dhcp binding", "example": "show ip dhcp binding", "description": "查看DHCP地址分配情况", "mode": "特权模式"}
+      ],
+      "keywords": ["dhcp", "地址池", "ip dhcp pool", "default-router", "dns-server", "dhcp snooping", "dhcp relay"]
+    },
+    "vrrp": {
+      "name": "HSRP/VRRP配置",
+      "commands": [
+        {"name": "启用HSRP", "syntax": "standby <group_id> ip <virtual_ip>", "example": "standby 1 ip 192.168.1.254", "description": "创建HSRP备份组并设置虚拟IP（Cisco私有协议）", "mode": "接口配置"},
+        {"name": "设置HSRP优先级", "syntax": "standby <group_id> priority <1-255>", "example": "standby 1 priority 120", "description": "设置HSRP优先级（默认100）", "mode": "接口配置"},
+        {"name": "启用HSRP抢占", "syntax": "standby <group_id> preempt", "example": "standby 1 preempt", "description": "启用HSRP抢占模式", "mode": "接口配置"},
+        {"name": "HSRP认证", "syntax": "standby <group_id> authentication <string>", "example": "standby 1 authentication mykey", "description": "设置HSRP认证密钥", "mode": "接口配置"},
+        {"name": "配置VRRP（替代HSRP）", "syntax": "vrrp <group_id> ip <virtual_ip>", "example": "vrrp 1 ip 192.168.1.254", "description": "使用VRRP代替HSRP（标准协议）", "mode": "接口配置"},
+        {"name": "查看HSRP状态", "syntax": "show standby [brief]", "example": "show standby brief", "description": "查看HSRP备份组状态", "mode": "特权模式"}
+      ],
+      "keywords": ["hsrp", "vrrp", "standby", "虚拟网关", "网关冗余", "优先级", "抢占"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置主机名", "syntax": "hostname <name>", "example": "hostname Core-SW-01", "description": "设置设备主机名", "mode": "全局配置"},
+        {"name": "配置SSH", "syntax": "ip domain-name <domain>\n  crypto key generate rsa\n  ip ssh version 2\n  username <user> privilege 15 secret <pass>\n  line vty 0 4\n  login local\n  transport input ssh", "example": "ip domain-name example.com\n  crypto key generate rsa\n  username admin secret P@ssw0rd\n  line vty 0 4\n  transport input ssh", "description": "配置SSH远程管理（Cisco完整流程）", "mode": "全局配置"},
+        {"name": "配置NTP", "syntax": "ntp server <ip> [prefer]", "example": "ntp server 192.168.1.100 prefer", "description": "配置NTP时间同步服务器", "mode": "全局配置"},
+        {"name": "配置SNMP", "syntax": "snmp-server community <string> {ro|rw}", "example": "snmp-server community public ro", "description": "配置SNMP团体字", "mode": "全局配置"},
+        {"name": "配置Syslog", "syntax": "logging <ip>", "example": "logging 192.168.1.200", "description": "配置Syslog服务器地址", "mode": "全局配置"},
+        {"name": "保存配置", "syntax": "write memory 或 copy running-config startup-config", "example": "copy running-config startup-config", "description": "保存当前配置（Cisco默认保存running-config）", "mode": "特权模式"},
+        {"name": "查看运行配置", "syntax": "show running-config [section <filter>]", "example": "show running-config | section vlan", "description": "查看当前运行配置，支持管道过滤", "mode": "特权模式"},
+        {"name": "查看启动配置", "syntax": "show startup-config", "example": "show startup-config", "description": "查看启动配置文件", "mode": "特权模式"},
+        {"name": "查看接口状态", "syntax": "show ip interface brief", "example": "show ip interface brief", "description": "查看所有接口IP和状态简要信息", "mode": "特权模式"},
+        {"name": "查看CDP邻居", "syntax": "show cdp neighbors [detail]", "example": "show cdp neighbors detail", "description": "查看CDP发现的对端设备（Cisco私有邻居发现协议）", "mode": "特权模式"},
+        {"name": "查看LLDP邻居", "syntax": "show lldp neighbors [detail]", "example": "show lldp neighbors", "description": "查看LLDP邻居信息", "mode": "特权模式"},
+        {"name": "查看日志", "syntax": "show logging [last <lines>]", "example": "show logging last 50", "description": "查看系统日志", "mode": "特权模式"},
+        {"name": "接口启用", "syntax": "no shutdown", "example": "no shutdown", "description": "启用接口（Cisco接口默认关闭）", "mode": "接口配置"}
+      ],
+      "keywords": ["hostname", "ssh", "crypto key", "ntp", "snmp", "syslog", "保存", "running-config", "cdp", "lldp"]
+    }
+  }
+}

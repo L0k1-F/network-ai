@@ -1,0 +1,38 @@
+# 环境变量 / 密钥 — 绝对不能提交
+.env
+.env.local
+.env.production
+.env.development
+
+# 排除示例文件（可以安全提交）
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+*.egg-info/
+
+# Node / Frontend
+node_modules/
+frontend/dist/
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Database / uploads
+*.db
+*.sqlite
+uploads/
+
+# OS
+Thumbs.db
+desktop.ini

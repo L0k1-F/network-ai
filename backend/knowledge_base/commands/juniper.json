@@ -1,0 +1,111 @@
+{
+  "vendor": "Juniper",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "进入配置模式", "syntax": "configure", "example": "configure", "description": "进入配置模式（所有配置操作需在此模式）", "mode": "操作模式"},
+        {"name": "创建VLAN", "syntax": "set vlans <vlan_name> vlan-id <id>", "example": "set vlans Management vlan-id 10", "description": "创建VLAN并指定VLAN ID", "mode": "配置模式"},
+        {"name": "设置VLAN L3接口", "syntax": "set vlans <vlan_name> l3-interface irb.<unit>", "example": "set vlans Management l3-interface irb.10", "description": "将VLAN绑定到三层IRB接口", "mode": "配置模式"},
+        {"name": "接口设为Access模式", "syntax": "set interfaces <interface> unit 0 family ethernet-switching interface-mode access\n  set interfaces <interface> unit 0 family ethernet-switching vlan members <vlan>", "example": "set interfaces ge-0/0/1 unit 0 family ethernet-switching interface-mode access\n  set interfaces ge-0/0/1 unit 0 family ethernet-switching vlan members Management", "description": "将接口设为Access模式并加入VLAN", "mode": "配置模式"},
+        {"name": "接口设为Trunk模式", "syntax": "set interfaces <interface> unit 0 family ethernet-switching interface-mode trunk\n  set interfaces <interface> unit 0 family ethernet-switching vlan members [<vlans>]", "example": "set interfaces ge-0/0/0 unit 0 family ethernet-switching interface-mode trunk\n  set interfaces ge-0/0/0 unit 0 family ethernet-switching vlan members [Management Production]", "description": "将接口设为Trunk模式并允许VLAN通过", "mode": "配置模式"},
+        {"name": "设置Native VLAN", "syntax": "set interfaces <interface> native-vlan-id <vlan_id>", "example": "set interfaces ge-0/0/0 native-vlan-id 1", "description": "设置Trunk端口的Native VLAN ID", "mode": "配置模式"},
+        {"name": "创建IRB接口（SVI）", "syntax": "set interfaces irb unit <id> family inet address <ip>/<prefix>", "example": "set interfaces irb unit 10 family inet address 192.168.10.1/24", "description": "创建集成路由桥接接口（等同于Cisco SVI）", "mode": "配置模式"},
+        {"name": "查看VLAN", "syntax": "show vlans", "example": "show vlans extensive", "description": "查看VLAN信息", "mode": "操作模式"},
+        {"name": "查看接口VLAN", "syntax": "show ethernet-switching interfaces", "example": "show ethernet-switching interfaces ge-0/0/0", "description": "查看接口的二层交换信息", "mode": "操作模式"}
+      ],
+      "keywords": ["vlan", "ethernet-switching", "access", "trunk", "irb", "native-vlan", "interface-mode"]
+    },
+    "stp": {
+      "name": "STP/MSTP配置",
+      "commands": [
+        {"name": "启用STP", "syntax": "set protocols rstp (或 mstp)", "example": "set protocols rstp", "description": "启用RSTP（Junos默认使用RSTP）", "mode": "配置模式"},
+        {"name": "设置桥优先级", "syntax": "set protocols rstp bridge-priority <0-61440 step 4096>", "example": "set protocols rstp bridge-priority 4096", "description": "设置交换机STP优先级", "mode": "配置模式"},
+        {"name": "配置MSTP", "syntax": "set protocols mstp configuration-name <name>\n  set protocols mstp revision-level <level>\n  set protocols mstp interface <interface>", "example": "set protocols mstp configuration-name REGION1\n  set protocols mstp revision-level 1", "description": "配置MSTP参数", "mode": "配置模式"},
+        {"name": "接口边缘端口", "syntax": "set protocols rstp interface <interface> edge", "example": "set protocols rstp interface ge-0/0/1 edge", "description": "将接口设为边缘端口", "mode": "配置模式"},
+        {"name": "BPDU保护", "syntax": "set protocols rstp bpdu-block-on-edge", "example": "set protocols rstp bpdu-block-on-edge", "description": "边缘端口收到BPDU则关闭端口", "mode": "配置模式"},
+        {"name": "查看STP", "syntax": "show spanning-tree bridge [detail]", "example": "show spanning-tree bridge detail", "description": "查看生成树状态", "mode": "操作模式"}
+      ],
+      "keywords": ["spanning-tree", "rstp", "mstp", "stp", "bridge-priority", "边缘端口", "bpdu"]
+    },
+    "aggregation": {
+      "name": "链路聚合",
+      "commands": [
+        {"name": "创建LAG接口", "syntax": "set interfaces <aeX> aggregated-ether-options minimum-links <n>\n  set interfaces <aeX> aggregated-ether-options link-speed <speed>", "example": "set interfaces ae0 aggregated-ether-options minimum-links 1", "description": "创建聚合以太网接口（LAG）", "mode": "配置模式"},
+        {"name": "加入LAG组", "syntax": "set interfaces <interface> ether-options 802.3ad <aeX>", "example": "set interfaces ge-0/0/0 ether-options 802.3ad ae0", "description": "将物理接口加入LAG组（LACP模式）", "mode": "配置模式"},
+        {"name": "设置LACP周期", "syntax": "set interfaces <aeX> aggregated-ether-options lacp periodic {fast|slow}", "example": "set interfaces ae0 aggregated-ether-options lacp periodic fast", "description": "设置LACP报文发送周期", "mode": "配置模式"},
+        {"name": "设置负载均衡", "syntax": "set policy-options policy-statement <name> then load-balance per-packet", "example": "set policy-options policy-statement LB then load-balance per-packet", "description": "通过策略配置负载均衡", "mode": "配置模式"},
+        {"name": "查看LAG", "syntax": "show interfaces <aeX> terse", "example": "show interfaces ae0 extensive", "description": "查看聚合接口状态", "mode": "操作模式"}
+      ],
+      "keywords": ["lag", "aggregated-ethernet", "ae", "lacp", "802.3ad", "链路聚合", "负载均衡"]
+    },
+    "routing": {
+      "name": "路由协议",
+      "commands": [
+        {"name": "配置静态路由", "syntax": "set routing-options static route <dest>/<prefix> next-hop <ip>", "example": "set routing-options static route 192.168.2.0/24 next-hop 10.1.1.1", "description": "添加静态路由", "mode": "配置模式"},
+        {"name": "配置默认路由", "syntax": "set routing-options static route 0.0.0.0/0 next-hop <ip>", "example": "set routing-options static route 0.0.0.0/0 next-hop 10.1.1.1", "description": "配置默认路由", "mode": "配置模式"},
+        {"name": "启用OSPF", "syntax": "set protocols ospf area <area_id> interface <interface>", "example": "set protocols ospf area 0.0.0.0 interface lo0.0 passive\n  set protocols ospf area 0.0.0.0 interface ge-0/0/0.0", "description": "配置OSPF区域和接口", "mode": "配置模式"},
+        {"name": "设置Router ID", "syntax": "set routing-options router-id <id>", "example": "set routing-options router-id 1.1.1.1", "description": "设置路由器的Router ID", "mode": "配置模式"},
+        {"name": "OSPF被动接口", "syntax": "set protocols ospf area <area> interface <intf> passive", "example": "set protocols ospf area 0.0.0.0 interface ge-0/0/1.0 passive", "description": "将接口设为被动模式", "mode": "配置模式"},
+        {"name": "启用BGP", "syntax": "set protocols bgp group <group_name> type {internal|external}\n  set protocols bgp group <group_name> local-address <ip>\n  set protocols bgp group <group_name> peer-as <as>\n  set protocols bgp group <group_name> neighbor <ip>", "example": "set protocols bgp group EBGP type external\n  set protocols bgp group EBGP peer-as 65002\n  set protocols bgp group EBGP neighbor 10.1.1.2", "description": "配置BGP对等体（Junos分组配置风格）", "mode": "配置模式"},
+        {"name": "查看路由表", "syntax": "show route [<destination>]", "example": "show route 192.168.1.0/24", "description": "查看路由表", "mode": "操作模式"},
+        {"name": "查看OSPF邻居", "syntax": "show ospf neighbor", "example": "show ospf neighbor extensive", "description": "查看OSPF邻居状态", "mode": "操作模式"},
+        {"name": "查看BGP邻居", "syntax": "show bgp summary", "example": "show bgp summary", "description": "查看BGP邻居摘要", "mode": "操作模式"}
+      ],
+      "keywords": ["静态路由", "ospf", "bgp", "routing-options", "next-hop", "router-id", "neighbor"]
+    },
+    "acl": {
+      "name": "ACL/Firewall Filter",
+      "commands": [
+        {"name": "创建防火墙过滤器", "syntax": "set firewall family inet filter <name> term <term_name> from ...\n  set firewall family inet filter <name> term <term_name> then ...", "example": "set firewall family inet filter BLOCK_WEB term 1 from source-address 192.168.1.0/24\n  set firewall family inet filter BLOCK_WEB term 1 from destination-port 80\n  set firewall family inet filter BLOCK_WEB term 1 then discard", "description": "创建防火墙过滤器（Junos无ACL，用Firewall Filter）", "mode": "配置模式"},
+        {"name": "默认拒绝规则", "syntax": "set firewall family inet filter <name> term <last> then {accept|discard|reject}", "example": "set firewall family inet filter BLOCK_WEB term LAST then accept", "description": "设置过滤器默认动作", "mode": "配置模式"},
+        {"name": "接口应用过滤器", "syntax": "set interfaces <interface> unit <n> family inet filter {input|output} <filter_name>", "example": "set interfaces ge-0/0/0 unit 0 family inet filter input BLOCK_WEB", "description": "在接口方向应用防火墙过滤器", "mode": "配置模式"},
+        {"name": "创建前缀列表", "syntax": "set policy-options prefix-list <name> <prefix>", "example": "set policy-options prefix-list RFC1918 10.0.0.0/8", "description": "创建前缀列表用于路由过滤", "mode": "配置模式"},
+        {"name": "路由策略（Route Policy）", "syntax": "set policy-options policy-statement <name> term <n> from ...\n  set policy-options policy-statement <name> term <n> then ...", "example": "set policy-options policy-statement REJECT-RFC1918 term 1 from prefix-list RFC1918\n  set policy-options policy-statement REJECT-RFC1918 term 1 then reject", "description": "创建路由策略用于路由过滤", "mode": "配置模式"},
+        {"name": "查看过滤器", "syntax": "show firewall filter <name>", "example": "show firewall filter BLOCK_WEB", "description": "查看防火墙过滤器规则", "mode": "操作模式"}
+      ],
+      "keywords": ["firewall filter", "acl", "term", "前缀列表", "路由策略", "policy-statement", "permit", "deny"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "配置DHCP服务器", "syntax": "set system services dhcp-local-server group <group> interface <intf>", "example": "set system services dhcp-local-server group LAN interface irb.10", "description": "启用DHCP本地服务器", "mode": "配置模式"},
+        {"name": "创建地址池", "syntax": "set access address-assignment pool <name> family inet network <prefix>\n  set access address-assignment pool <name> family inet range <rname> low <low> high <high>", "example": "set access address-assignment pool VLAN10 family inet network 192.168.1.0/24\n  set access address-assignment pool VLAN10 family inet range r1 low 192.168.1.10 high 192.168.1.250", "description": "配置DHCP地址池", "mode": "配置模式"},
+        {"name": "配置网关和DNS", "syntax": "set access address-assignment pool <name> family inet dhcp-attributes router <ip>\n  set access address-assignment pool <name> family inet dhcp-attributes name-server <ip>", "example": "set access address-assignment pool VLAN10 family inet dhcp-attributes router 192.168.1.1\n  set access address-assignment pool VLAN10 family inet dhcp-attributes name-server 8.8.8.8", "description": "配置DHCP网关和DNS", "mode": "配置模式"},
+        {"name": "DHCP Snooping", "syntax": "set forwarding-options dhcp-relay server-group <name> <server_ip>", "example": "set forwarding-options dhcp-relay server-group DHCP 192.168.1.10", "description": "配置DHCP中继（DHCP Relay）", "mode": "配置模式"},
+        {"name": "查看DHCP绑定", "syntax": "show dhcp server binding", "example": "show dhcp server binding", "description": "查看DHCP地址分配情况", "mode": "操作模式"}
+      ],
+      "keywords": ["dhcp", "address-assignment", "地址池", "dhcp-local-server", "dhcp relay", "dhcp snooping"]
+    },
+    "vrrp": {
+      "name": "VRRP配置",
+      "commands": [
+        {"name": "创建VRRP组", "syntax": "set interfaces <interface> unit <n> family inet address <ip>/<prefix> vrrp-group <id> virtual-address <ip>", "example": "set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24 vrrp-group 1 virtual-address 192.168.1.254", "description": "创建VRRP备份组", "mode": "配置模式"},
+        {"name": "设置优先级", "syntax": "set interfaces <interface> unit <n> family inet address <ip> vrrp-group <id> priority <1-255>", "example": "set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24 vrrp-group 1 priority 120", "description": "设置VRRP优先级", "mode": "配置模式"},
+        {"name": "抢占模式", "syntax": "set interfaces <interface> family inet address <ip> vrrp-group <id> preempt", "example": "set interfaces ge-0/0/0 unit 0 family inet address 192.168.1.1/24 vrrp-group 1 preempt", "description": "启用VRRP抢占", "mode": "配置模式"},
+        {"name": "查看VRRP", "syntax": "show vrrp [summary]", "example": "show vrrp summary", "description": "查看VRRP状态", "mode": "操作模式"}
+      ],
+      "keywords": ["vrrp", "虚拟网关", "vrrp-group", "优先级", "抢占", "virtual-address"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置主机名", "syntax": "set system host-name <name>", "example": "set system host-name Core-SW-01", "description": "设置设备主机名", "mode": "配置模式"},
+        {"name": "配置管理IP", "syntax": "set interfaces <interface> unit 0 family inet address <ip>/<prefix>", "example": "set interfaces fxp0 unit 0 family inet address 192.168.1.1/24", "description": "配置带外管理接口IP", "mode": "配置模式"},
+        {"name": "配置SSH", "syntax": "set system services ssh root-login deny", "example": "set system services ssh", "description": "启用SSH服务（Junos默认启用SSH）", "mode": "配置模式"},
+        {"name": "创建用户", "syntax": "set system login user <user> class super-user authentication plain-text-password", "example": "set system login user admin class super-user authentication plain-text-password", "description": "创建管理员用户", "mode": "配置模式"},
+        {"name": "配置NTP", "syntax": "set system ntp server <ip> [prefer]", "example": "set system ntp server 192.168.1.100 prefer", "description": "配置NTP服务器", "mode": "配置模式"},
+        {"name": "配置SNMP", "syntax": "set snmp community <community> authorization read-only", "example": "set snmp community public authorization read-only", "description": "配置SNMP只读团体字", "mode": "配置模式"},
+        {"name": "配置Syslog", "syntax": "set system syslog host <ip> any any", "example": "set system syslog host 192.168.1.200 any any", "description": "配置Syslog服务器", "mode": "配置模式"},
+        {"name": "提交配置", "syntax": "commit [check|confirmed <minutes>]", "example": "commit confirmed 5", "description": "提交配置（confirmed=自动回滚，Junos关键特性）", "mode": "配置模式"},
+        {"name": "回滚配置", "syntax": "rollback <revision_number>", "example": "rollback 1\n  commit", "description": "回滚到之前的配置版本（Junos独有特性）", "mode": "配置模式"},
+        {"name": "查看配置", "syntax": "show configuration [| display set]", "example": "show configuration | display set", "description": "查看当前配置（set格式更直观）", "mode": "操作模式"},
+        {"name": "查看接口", "syntax": "show interfaces terse", "example": "show interfaces terse ge-*", "description": "查看接口简要信息", "mode": "操作模式"},
+        {"name": "查看LLDP邻居", "syntax": "show lldp neighbors", "example": "show lldp neighbors", "description": "查看LLDP邻居", "mode": "操作模式"},
+        {"name": "查看日志", "syntax": "show log messages [| last <n>]", "example": "show log messages | last 50", "description": "查看系统消息日志", "mode": "操作模式"},
+        {"name": "接口命名规范", "syntax": "ge-<slot>/<port>/<subport> (GE), xe- (10GE), et- (40/100GE)", "example": "ge-0/0/0 = 第一个槽位, 端口0, 子端口0", "description": "Junos接口命名：类型-槽位/端口/子端口，与Cisco完全不同", "mode": "参考信息"}
+      ],
+      "keywords": ["host-name", "管理", "commit", "回滚", "rollback", "ssh", "ntp", "snmp", "syslog", "fxp0", "接口命名"]
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "vendor": "Extreme",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "创建VLAN", "syntax": "create vlan <vlan_name>", "example": "create vlan Management", "description": "创建VLAN（Extreme使用名称标识VLAN）", "mode": "配置模式"},
+        {"name": "设置VLAN标签", "syntax": "configure vlan <vlan_name> tag <vlan_id>", "example": "configure vlan Management tag 10", "description": "为VLAN设置802.1Q标签ID", "mode": "配置模式"},
+        {"name": "接口加入VLAN（Untagged）", "syntax": "configure vlan <vlan_name> add ports <port_list> untagged", "example": "configure vlan Management add ports 1-4 untagged", "description": "将端口以Untagged方式加入VLAN", "mode": "配置模式"},
+        {"name": "接口加入VLAN（Tagged）", "syntax": "configure vlan <vlan_name> add ports <port_list> tagged", "example": "configure vlan Management add ports 5 tagged", "description": "将端口以Tagged方式加入VLAN（Trunk）", "mode": "配置模式"},
+        {"name": "设置端口PVID", "syntax": "configure vlan <vlan_name> add ports <port_list> untagged", "example": "configure vlan Management add ports 1 untagged", "description": "设置端口的PVID（通过untagged成员关系）", "mode": "配置模式"},
+        {"name": "删除VLAN", "syntax": "delete vlan <vlan_name>", "example": "delete vlan Management", "description": "删除指定VLAN", "mode": "配置模式"},
+        {"name": "创建VLAN IP接口", "syntax": "create vlan <vlan_name>\n  configure vlan <vlan_name> ipaddress <ip>/<prefix>", "example": "create vlan Mgmt\n  configure vlan Mgmt ipaddress 192.168.99.1/24", "description": "创建三层VLAN接口（相当于SVI）", "mode": "配置模式"},
+        {"name": "查看VLAN", "syntax": "show vlan [<vlan_name>|detail]", "example": "show vlan detail", "description": "查看VLAN配置和端口归属", "mode": "特权模式"}
+      ],
+      "keywords": ["vlan", "create vlan", "tag", "tagged", "untagged", "add ports", "ipaddress", "pvid"]
+    },
+    "stp": {
+      "name": "STP/MSTP配置",
+      "commands": [
+        {"name": "启用STP", "syntax": "enable stp", "example": "enable stp", "description": "全局启用生成树协议", "mode": "特权模式"},
+        {"name": "关闭STP", "syntax": "disable stp", "example": "disable stp", "description": "全局关闭生成树（Extreme默认stp关闭）", "mode": "特权模式"},
+        {"name": "STP端口模式", "syntax": "configure stp ports <port_list> mode {802.1d|802.1w|dot1w}", "example": "configure stp ports 1-4 mode dot1w", "description": "设置端口的STP模式（RSTP=dot1w）", "mode": "配置模式"},
+        {"name": "边缘端口", "syntax": "configure stp ports <port_list> edge-port true", "example": "configure stp ports 1-4 edge-port true", "description": "将端口设为边缘端口", "mode": "配置模式"},
+        {"name": "桥优先级", "syntax": "configure stp priority <0-61440>", "example": "configure stp priority 4096", "description": "设置交换机STP优先级", "mode": "配置模式"},
+        {"name": "端口优先级", "syntax": "configure stp ports <port_list> priority <0-240>", "example": "configure stp ports 5 priority 32", "description": "设置端口STP优先级", "mode": "配置模式"},
+        {"name": "查看STP", "syntax": "show stp [ports <port_list>|detail]", "example": "show stp detail", "description": "查看生成树状态", "mode": "特权模式"}
+      ],
+      "keywords": ["stp", "enable stp", "dot1w", "rstp", "edge-port", "桥优先级", "生成树"]
+    },
+    "aggregation": {
+      "name": "链路聚合",
+      "commands": [
+        {"name": "启用LACP", "syntax": "enable lacp", "example": "enable lacp", "description": "全局启用LACP", "mode": "特权模式"},
+        {"name": "创建LAG", "syntax": "enable sharing <master_port> grouping <port_list> algorithm address-based {L2|L3|L3_L4}", "example": "enable sharing 1 grouping 1-4 algorithm address-based L3_L4", "description": "创建链路聚合组并设置负载均衡算法", "mode": "特权模式"},
+        {"name": "LACP模式", "syntax": "configure sharing <master_port> lacp {active|passive}", "example": "configure sharing 1 lacp active", "description": "设置LAG的LACP协商模式", "mode": "配置模式"},
+        {"name": "系统优先级", "syntax": "configure lacp system-priority <1-65535>", "example": "configure lacp system-priority 100", "description": "设置LACP系统优先级", "mode": "配置模式"},
+        {"name": "删除LAG", "syntax": "disable sharing <master_port>", "example": "disable sharing 1", "description": "删除链路聚合组（解绑所有端口）", "mode": "特权模式"},
+        {"name": "查看LAG", "syntax": "show sharing [<master_port>|detail|lacp]", "example": "show sharing detail", "description": "查看链路聚合组状态", "mode": "特权模式"}
+      ],
+      "keywords": ["链路聚合", "sharing", "lacp", "enable sharing", "disable sharing", "负载均衡", "load-balance"]
+    },
+    "routing": {
+      "name": "路由协议",
+      "commands": [
+        {"name": "启用IP转发", "syntax": "enable ipforwarding", "example": "enable ipforwarding", "description": "启用三层IP路由转发", "mode": "特权模式"},
+        {"name": "配置静态路由", "syntax": "configure iproute add <dest_ip>/<prefix> <next_hop> [<metric>]", "example": "configure iproute add 192.168.2.0/24 10.1.1.1", "description": "添加静态路由", "mode": "配置模式"},
+        {"name": "配置默认路由", "syntax": "configure iproute add default <next_hop>", "example": "configure iproute add default 10.1.1.254", "description": "配置默认路由（使用default关键字）", "mode": "配置模式"},
+        {"name": "启用OSPF", "syntax": "enable ospf", "example": "enable ospf", "description": "全局启用OSPF进程", "mode": "特权模式"},
+        {"name": "配置OSPF", "syntax": "configure ospf routerid <id>\n  configure ospf add vlan <vlan_name> area <area>\n  configure ospf add ipRange <network>/<prefix> area <area>", "example": "configure ospf routerid 1.1.1.1\n  configure ospf add vlan Mgmt area 0.0.0.0", "description": "配置OSPF Router ID和区域宣告", "mode": "配置模式"},
+        {"name": "启用BGP", "syntax": "enable bgp", "example": "enable bgp", "description": "启用BGP进程", "mode": "特权模式"},
+        {"name": "配置BGP", "syntax": "configure bgp AS-number <as>\n  configure bgp neighbor <ip> remote-AS-number <as>", "example": "configure bgp AS-number 65001\n  configure bgp neighbor 10.1.1.2 remote-AS-number 65002", "description": "配置BGP AS和邻居", "mode": "配置模式"},
+        {"name": "查看路由表", "syntax": "show iproute [origin|vlan|permanent]", "example": "show iproute", "description": "查看IP路由表", "mode": "特权模式"}
+      ],
+      "keywords": ["静态路由", "ospf", "bgp", "iproute", "ipforwarding", "routerid", "default", "enable ospf"]
+    },
+    "acl": {
+      "name": "ACL/策略配置",
+      "commands": [
+        {"name": "创建ACL策略文件", "syntax": "edit policy <policy_name>", "example": "edit policy BLOCK_SSH.pol", "description": "创建/编辑ACL策略文件（.pol后缀）", "mode": "特权模式"},
+        {"name": "ACL规则条目", "syntax": "entry <name> {\n  if { source-address <ip>/<prefix>; destination-address <ip>/<prefix>; protocol <protocol>; } \n  then { permit|deny; } \n}", "example": "entry WEB_FILTER {\n  if { source-address 192.168.1.0/24; protocol tcp; destination-port 80; }\n  then { permit; }\n}", "description": "ACL规则（使用类似代码块的语法）", "mode": "策略编辑"},
+        {"name": "应用策略到接口", "syntax": "configure access-list <policy_name> ports <port_list> ingress", "example": "configure access-list BLOCK_SSH ports 1-4 ingress", "description": "将策略应用到端口入方向", "mode": "配置模式"},
+        {"name": "查看策略", "syntax": "show policy <policy_name>", "example": "show policy BLOCK_SSH", "description": "查看策略详情", "mode": "特权模式"}
+      ],
+      "keywords": ["acl", "policy", "access-list", "entry", "permit", "deny", "策略", "过滤"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "启用DHCP中继", "syntax": "enable bootprelay", "example": "enable bootprelay", "description": "全局启用DHCP中继（BOOTP Relay）", "mode": "特权模式"},
+        {"name": "添加DHCP服务器", "syntax": "configure bootprelay add <dhcp_server_ip>", "example": "configure bootprelay add 192.168.1.10", "description": "添加DHCP中继服务器地址", "mode": "配置模式"},
+        {"name": "VLAN中继", "syntax": "configure bootprelay add <ip> vlan <vlan_name>", "example": "configure bootprelay add 192.168.1.10 vlan Mgmt", "description": "为指定VLAN配置DHCP中继", "mode": "配置模式"},
+        {"name": "DHCP Snooping", "syntax": "enable dhcp-snooping", "example": "enable dhcp-snooping", "description": "启用DHCP Snooping", "mode": "特权模式"},
+        {"name": "查看DHCP中继", "syntax": "show bootprelay", "example": "show bootprelay", "description": "查看DHCP中继配置", "mode": "特权模式"}
+      ],
+      "keywords": ["dhcp", "bootprelay", "dhcp relay", "dhcp snooping", "dhcp中继", "bootp"]
+    },
+    "vrrp": {
+      "name": "VRRP配置",
+      "commands": [
+        {"name": "启用VRRP", "syntax": "enable vrrp", "example": "enable vrrp", "description": "全局启用VRRP", "mode": "特权模式"},
+        {"name": "创建VRRP", "syntax": "configure vrrp vlan <vlan_name> vrid <id>\n  configure vrrp vlan <vlan_name> vrid <id> add <virtual_ip>", "example": "configure vrrp vlan Mgmt vrid 1\n  configure vrrp vlan Mgmt vrid 1 add 192.168.1.254", "description": "在VLAN接口上创建VRRP备份组", "mode": "配置模式"},
+        {"name": "设置优先级", "syntax": "configure vrrp vlan <vlan_name> vrid <id> priority <1-254>", "example": "configure vrrp vlan Mgmt vrid 1 priority 120", "description": "设置VRRP优先级", "mode": "配置模式"},
+        {"name": "抢占", "syntax": "configure vrrp vlan <vlan_name> vrid <id> preempt", "example": "configure vrrp vlan Mgmt vrid 1 preempt", "description": "启用VRRP抢占模式", "mode": "配置模式"},
+        {"name": "查看VRRP", "syntax": "show vrrp [vlan <vlan_name>|detail]", "example": "show vrrp detail", "description": "查看VRRP状态", "mode": "特权模式"}
+      ],
+      "keywords": ["vrrp", "虚拟网关", "vrid", "优先级", "抢占", "enable vrrp", "vrrp vlan"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置系统名称", "syntax": "configure sysname <name>", "example": "configure sysname Core-SW-01", "description": "设置设备系统名称", "mode": "配置模式"},
+        {"name": "配置SNMP", "syntax": "enable snmp access\n  configure snmp sysContact <contact>\n  configure snmp sysLocation <location>", "example": "enable snmp access\n  configure snmp sysContact admin@example.com\n  configure snmp sysLocation DC-01", "description": "启用并配置SNMP", "mode": "配置模式"},
+        {"name": "创建管理用户", "syntax": "create account {admin|user} <username> <password>", "example": "create account admin admin P@ssw0rd", "description": "创建本地管理员账户", "mode": "特权模式"},
+        {"name": "配置NTP", "syntax": "enable ntp\n  configure ntp server add <ip> [prefer]", "example": "enable ntp\n  configure ntp server add 192.168.1.100 prefer", "description": "启用并配置NTP时间同步", "mode": "配置模式"},
+        {"name": "配置Syslog", "syntax": "enable syslog\n  configure syslog add <server_ip> [local0-local7]", "example": "enable syslog\n  configure syslog add 192.168.1.200 local0", "description": "启用并配置Syslog日志服务器", "mode": "配置模式"},
+        {"name": "保存配置", "syntax": "save configuration {primary|secondary}", "example": "save configuration primary", "description": "保存当前配置（primary=主配置文件）", "mode": "特权模式"},
+        {"name": "查看配置", "syntax": "show configuration [<module>|detail]", "example": "show configuration vlan", "description": "查看当前运行的模块配置", "mode": "特权模式"},
+        {"name": "查看接口状态", "syntax": "show ports [<port_list>] {configuration|statistics|utilization}", "example": "show ports configuration", "description": "查看端口配置和状态", "mode": "特权模式"},
+        {"name": "查看端口统计", "syntax": "show ports <port_list> statistics", "example": "show ports 1-4 statistics", "description": "查看端口流量统计信息", "mode": "特权模式"},
+        {"name": "查看LLDP", "syntax": "show lldp [neighbors|port <port>]", "example": "show lldp neighbors", "description": "查看LLDP邻居信息", "mode": "特权模式"},
+        {"name": "查看日志", "syntax": "show log [messages|events] [<count>]", "example": "show log messages 50", "description": "查看系统日志", "mode": "特权模式"},
+        {"name": "查看MAC表", "syntax": "show fdb [vlan <vlan_name>|ports <port_list>]", "example": "show fdb vlan Management", "description": "查看MAC转发数据库（FDB）", "mode": "特权模式"},
+        {"name": "重启设备", "syntax": "reboot [time <hh:mm>|cancel]", "example": "reboot time 02:00", "description": "重启交换机（支持定时重启和取消）", "mode": "特权模式"}
+      ],
+      "keywords": ["sysname", "管理", "snmp", "ntp", "syslog", "save", "configuration", "lldp", "fdb", "reboot", "ports"]
+    }
+  }
+}

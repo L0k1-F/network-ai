@@ -1,0 +1,7 @@
+fastapi==0.110.0
+uvicorn==0.27.1
+openai==1.14.1
+pydantic==2.6.1
+python-dotenv==1.0.1
+anthropic>=0.39.0
+Pillow>=10.0.0

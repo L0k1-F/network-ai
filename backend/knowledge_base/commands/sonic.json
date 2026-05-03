@@ -1,0 +1,110 @@
+{
+  "vendor": "SONiC",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "创建VLAN", "syntax": "sudo config vlan add <vlan_id>", "example": "sudo config vlan add 10", "description": "创建VLAN（SONiC使用Linux风格命令行）", "mode": "Linux Shell"},
+        {"name": "删除VLAN", "syntax": "sudo config vlan del <vlan_id>", "example": "sudo config vlan del 10", "description": "删除指定VLAN", "mode": "Linux Shell"},
+        {"name": "添加成员端口（Access）", "syntax": "sudo config vlan member add <vlan_id> <interface>", "example": "sudo config vlan member add 10 Ethernet0", "description": "将端口加入VLAN（Access/Untagged）", "mode": "Linux Shell"},
+        {"name": "删除成员端口", "syntax": "sudo config vlan member del <vlan_id> <interface>", "example": "sudo config vlan member del 10 Ethernet0", "description": "从VLAN中移除端口", "mode": "Linux Shell"},
+        {"name": "配置Trunk端口", "syntax": "sudo config interface vlan add <interface> <vlan_id>", "example": "sudo config interface vlan add Ethernet0 10", "description": "将端口配置为Trunk模式（允许多个VLAN Tagged）", "mode": "Linux Shell"},
+        {"name": "配置IP地址", "syntax": "sudo config interface ip add <interface> <ip>/<prefix>", "example": "sudo config interface ip add Vlan10 192.168.10.1/24", "description": "为VLAN接口配置IP地址", "mode": "Linux Shell"},
+        {"name": "查看VLAN", "syntax": "show vlan brief", "example": "show vlan brief", "description": "查看VLAN配置汇总", "mode": "Linux Shell"},
+        {"name": "查看VLAN详情", "syntax": "show vlan config", "example": "show vlan config", "description": "查看VLAN详细配置", "mode": "Linux Shell"}
+      ],
+      "keywords": ["vlan", "config vlan", "vlan member", "tagged", "untagged", "access", "trunk", "Vlan interface"]
+    },
+    "stp": {
+      "name": "STP配置（通过Frrouting/STPd）",
+      "commands": [
+        {"name": "进入vtysh", "syntax": "vtysh", "example": "vtysh", "description": "进入FRRouting集成Shell（类Cisco CLI）", "mode": "Linux Shell"},
+        {"name": "启用STP（STPd）", "syntax": "sudo systemctl enable stpd\n  sudo systemctl start stpd", "example": "sudo systemctl start stpd", "description": "启动STP守护进程（STPd容器）", "mode": "Linux Shell"},
+        {"name": "STP配置（vtysh内）", "syntax": "configure terminal\n  bridge <bridge_id> protocol ieee stp", "example": "configure terminal\n  bridge 1 protocol ieee stp", "description": "在vtysh中为网桥启用STP", "mode": "vtysh配置"},
+        {"name": "设置桥优先级", "syntax": "bridge <id> priority <0-65535>", "example": "bridge 1 priority 4096", "description": "设置桥优先级", "mode": "vtysh配置"},
+        {"name": "查看STP状态", "syntax": "show spanning-tree [brief]", "example": "show spanning-tree brief", "description": "查看STP状态", "mode": "vtysh"},
+        {"name": "查看STPd服务状态", "syntax": "sudo systemctl status stpd", "example": "sudo systemctl status stpd", "description": "检查STPd守护进程运行状态", "mode": "Linux Shell"}
+      ],
+      "keywords": ["stp", "stpd", "spanning-tree", "vtysh", "bridge", "生成树", "frrouting"]
+    },
+    "aggregation": {
+      "name": "链路聚合（PortChannel/LAG）",
+      "commands": [
+        {"name": "创建PortChannel", "syntax": "sudo config portchannel add <PortChannel_name>", "example": "sudo config portchannel add PortChannel1", "description": "创建链路聚合接口", "mode": "Linux Shell"},
+        {"name": "添加成员端口", "syntax": "sudo config portchannel member add <PortChannel_name> <interface>", "example": "sudo config portchannel member add PortChannel1 Ethernet0", "description": "将物理接口加入PortChannel", "mode": "Linux Shell"},
+        {"name": "删除PortChannel", "syntax": "sudo config portchannel del <PortChannel_name>", "example": "sudo config portchannel del PortChannel1", "description": "删除链路聚合接口", "mode": "Linux Shell"},
+        {"name": "查看PortChannel", "syntax": "show interfaces portchannel", "example": "show interfaces portchannel", "description": "查看PortChannel状态", "mode": "Linux Shell"},
+        {"name": "配置LACP Fallback", "syntax": "sudo config portchannel fallback enable <PortChannel_name>", "example": "sudo config portchannel fallback enable PortChannel1", "description": "启用LACP Fallback模式（单端口也可转发）", "mode": "Linux Shell"}
+      ],
+      "keywords": ["链路聚合", "portchannel", "lag", "lacp", "config portchannel", "聚合"]
+    },
+    "routing": {
+      "name": "路由协议（FRRouting/BGP）",
+      "commands": [
+        {"name": "进入vtysh配置模式", "syntax": "vtysh\n  configure terminal", "example": "vtysh\n  configure terminal", "description": "进入FRRouting配置模式", "mode": "Linux Shell→vtysh"},
+        {"name": "配置静态路由", "syntax": "ip route <dest_ip>/<prefix> <next_hop>", "example": "ip route 192.168.2.0/24 10.1.1.1", "description": "添加静态路由（vtysh内）", "mode": "vtysh配置"},
+        {"name": "配置默认路由", "syntax": "ip route 0.0.0.0/0 <next_hop>", "example": "ip route 0.0.0.0/0 10.1.1.254", "description": "配置默认路由", "mode": "vtysh配置"},
+        {"name": "启用BGP（SONiC主要路由协议）", "syntax": "router bgp <as_number>\n  bgp router-id <id>\n  neighbor <ip> remote-as <as>", "example": "router bgp 65001\n  bgp router-id 1.1.1.1\n  neighbor 10.1.1.2 remote-as 65002", "description": "在vtysh中配置BGP（SONiC数据中心主要用BGP）", "mode": "vtysh配置"},
+        {"name": "BGP宣告网络", "syntax": "address-family ipv4 unicast\n  network <ip>/<prefix>", "example": "address-family ipv4 unicast\n  network 192.168.1.0/24", "description": "在BGP中宣告网络", "mode": "vtysh BGP配置"},
+        {"name": "配置OSPF", "syntax": "router ospf\n  ospf router-id <id>\n  network <ip>/<prefix> area <area>", "example": "router ospf\n  ospf router-id 1.1.1.1\n  network 10.1.1.0/24 area 0.0.0.0", "description": "在vtysh中配置OSPF", "mode": "vtysh配置"},
+        {"name": "查看路由表", "syntax": "show ip route [bgp|ospf|static]", "example": "show ip route bgp", "description": "查看路由表（vtysh内）", "mode": "vtysh"},
+        {"name": "查看BGP邻居", "syntax": "show ip bgp summary", "example": "show ip bgp summary", "description": "查看BGP邻居状态", "mode": "vtysh"},
+        {"name": "查看BGP路由", "syntax": "show ip bgp", "example": "show ip bgp", "description": "查看BGP路由表", "mode": "vtysh"},
+        {"name": "保存FRR配置", "syntax": "write memory", "example": "write memory", "description": "保存FRRouting配置（vtysh内）", "mode": "vtysh"}
+      ],
+      "keywords": ["bgp", "ospf", "静态路由", "vtysh", "frr", "frrouting", "router bgp", "ip route", "write memory"]
+    },
+    "acl": {
+      "name": "ACL/安全配置",
+      "commands": [
+        {"name": "创建ACL表", "syntax": "sudo config acl add table <table_name> <table_type> -p <ports>", "example": "sudo config acl add table BLOCK_SSH L3 -p Ethernet0,Ethernet4", "description": "创建ACL规则表并绑定到端口", "mode": "Linux Shell"},
+        {"name": "添加ACL规则", "syntax": "sudo config acl add rule <table_name> <rule_name> <priority> <action> <match_fields>", "example": "sudo config acl add rule BLOCK_SSH RULE_1 9999 DROP SRC_IP 192.168.1.0/24 IP_PROTOCOL 6 L4_SRC_PORT 22", "description": "添加ACL规则到指定表", "mode": "Linux Shell"},
+        {"name": "删除ACL规则", "syntax": "sudo config acl remove rule <table_name> <rule_name>", "example": "sudo config acl remove rule BLOCK_SSH RULE_1", "description": "删除指定ACL规则", "mode": "Linux Shell"},
+        {"name": "查看ACL表", "syntax": "show acl table [<table_name>]", "example": "show acl table BLOCK_SSH", "description": "查看ACL表规则", "mode": "Linux Shell"},
+        {"name": "查看ACL规则", "syntax": "show acl rule <table_name> <rule_name>", "example": "show acl rule BLOCK_SSH RULE_1", "description": "查看ACL规则详情", "mode": "Linux Shell"}
+      ],
+      "keywords": ["acl", "config acl", "acl table", "acl rule", "过滤", "match", "action", "drop", "permit"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "启用DHCP中继", "syntax": "sudo config vlan dhcp_relay add <vlan_id> <dhcp_server_ip>", "example": "sudo config vlan dhcp_relay add 10 192.168.1.10", "description": "为VLAN配置DHCP中继服务器", "mode": "Linux Shell"},
+        {"name": "删除DHCP中继", "syntax": "sudo config vlan dhcp_relay del <vlan_id> <dhcp_server_ip>", "example": "sudo config vlan dhcp_relay del 10 192.168.1.10", "description": "删除VLAN的DHCP中继", "mode": "Linux Shell"},
+        {"name": "查看DHCP中继", "syntax": "show dhcp_relay", "example": "show dhcp_relay", "description": "查看DHCP中继配置和状态", "mode": "Linux Shell"},
+        {"name": "DHCP服务状态", "syntax": "sudo systemctl status dhcp_relay", "example": "sudo systemctl status dhcp_relay", "description": "查看DHCP中继容器运行状态", "mode": "Linux Shell"}
+      ],
+      "keywords": ["dhcp", "dhcp_relay", "dhcp relay", "dhcp中继", "dhcp server", "地址分配"]
+    },
+    "vrrp": {
+      "name": "VRRP配置（通过FRRouting）",
+      "commands": [
+        {"name": "进入接口配置VRRP", "syntax": "vtysh\n  configure terminal\n  interface <interface>\n  vrrp <group_id> ip <virtual_ip>", "example": "vtysh\n  configure terminal\n  interface Vlan10\n  vrrp 1 ip 192.168.1.254", "description": "在FRRouting中为接口配置VRRP", "mode": "vtysh配置"},
+        {"name": "设置VRRP优先级", "syntax": "vrrp <group_id> priority <1-254>", "example": "vrrp 1 priority 120", "description": "设置VRRP优先级", "mode": "vtysh接口配置"},
+        {"name": "查看VRRP状态", "syntax": "show vrrp [<group_id>|brief]", "example": "show vrrp brief", "description": "查看VRRP状态（vtysh内）", "mode": "vtysh"}
+      ],
+      "keywords": ["vrrp", "vtysh", "虚拟网关", "priority", "vrrp group", "virtual-ip"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置主机名", "syntax": "sudo config hostname <name>", "example": "sudo config hostname Core-SW-01", "description": "设置设备主机名", "mode": "Linux Shell"},
+        {"name": "配置管理接口IP", "syntax": "sudo config interface ip add eth0 <ip>/<prefix>", "example": "sudo config interface ip add eth0 192.168.1.1/24", "description": "配置管理网口IP（eth0=管理口）", "mode": "Linux Shell"},
+        {"name": "配置默认网关", "syntax": "sudo ip route add default via <ip>", "example": "sudo ip route add default via 192.168.1.254", "description": "配置默认网关", "mode": "Linux Shell"},
+        {"name": "查看接口状态", "syntax": "show interfaces status", "example": "show interfaces status", "description": "查看所有接口状态", "mode": "Linux Shell"},
+        {"name": "查看接口IP", "syntax": "show ip interfaces", "example": "show ip interfaces", "description": "查看接口IP地址配置", "mode": "Linux Shell"},
+        {"name": "查看端口计数器", "syntax": "show interfaces counters", "example": "show interfaces counters", "description": "查看接口流量统计", "mode": "Linux Shell"},
+        {"name": "查看系统信息", "syntax": "show version", "example": "show version", "description": "查看SONiC版本和系统信息", "mode": "Linux Shell"},
+        {"name": "查看CPU/内存", "syntax": "show processes cpu", "example": "show processes cpu", "description": "查看CPU和内存使用情况", "mode": "Linux Shell"},
+        {"name": "查看LLDP邻居", "syntax": "show lldp table", "example": "show lldp table", "description": "查看LLDP邻居信息", "mode": "Linux Shell"},
+        {"name": "查看系统日志", "syntax": "show logging [<container>] [-f|--follow] [-l <lines>]", "example": "show logging -l 50", "description": "查看系统日志（类似journalctl）", "mode": "Linux Shell"},
+        {"name": "查看端口列表", "syntax": "show interface status", "example": "show interface status", "description": "查看所有物理端口状态", "mode": "Linux Shell"},
+        {"name": "保存配置", "syntax": "sudo config save -y", "example": "sudo config save -y", "description": "保存当前运行配置到/etc/sonic/config_db.json", "mode": "Linux Shell"},
+        {"name": "重新加载配置", "syntax": "sudo config reload [-y|--force]", "example": "sudo config reload -y", "description": "重新加载配置文件", "mode": "Linux Shell"},
+        {"name": "查看运行配置", "syntax": "show runningconfiguration all", "example": "show runningconfiguration all", "description": "查看当前完整运行配置", "mode": "Linux Shell"},
+        {"name": "容器管理", "syntax": "docker ps (查看运行容器)", "example": "docker ps", "description": "查看所有SONiC容器运行状态（BGP/SNMP/LLDP等各自独立容器）", "mode": "Linux Shell"},
+        {"name": "进入容器", "syntax": "sudo docker exec -it <container_name> bash", "example": "sudo docker exec -it bgp bash", "description": "进入指定容器内部进行调试", "mode": "Linux Shell"}
+      ],
+      "keywords": ["sonic", "容器", "docker", "管理", "config save", "lldp", "日志", "logging", "interfaces", "hostname", "bgp容器"]
+    }
+  }
+}

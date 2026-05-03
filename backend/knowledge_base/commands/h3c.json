@@ -1,0 +1,123 @@
+{
+  "vendor": "H3C",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "进入系统视图", "syntax": "system-view", "example": "system-view", "description": "从用户视图进入系统视图", "mode": "用户视图"},
+        {"name": "批量创建VLAN", "syntax": "vlan <vlan_id_list>", "example": "vlan 10 20 30", "description": "一次性创建多个VLAN", "mode": "系统视图"},
+        {"name": "创建VLAN并进入", "syntax": "vlan <vlan_id>", "example": "vlan 10\n  name Management", "description": "创建VLAN并进入VLAN视图", "mode": "系统视图"},
+        {"name": "接口设为Access模式", "syntax": "port link-type access", "example": "port link-type access", "description": "将接口设置为Access模式", "mode": "接口视图"},
+        {"name": "Access端口加入VLAN", "syntax": "port access vlan <vlan_id>", "example": "port access vlan 10", "description": "将Access端口划入指定VLAN", "mode": "接口视图"},
+        {"name": "接口设为Trunk模式", "syntax": "port link-type trunk", "example": "port link-type trunk", "description": "将接口设置为Trunk模式", "mode": "接口视图"},
+        {"name": "Trunk允许VLAN通过", "syntax": "port trunk permit vlan <vlan_list>", "example": "port trunk permit vlan 10 20 30", "description": "设置Trunk端口允许通过的VLAN", "mode": "接口视图"},
+        {"name": "设置Trunk PVID", "syntax": "port trunk pvid vlan <vlan_id>", "example": "port trunk pvid vlan 1", "description": "设置Trunk端口的PVID（本征VLAN）", "mode": "接口视图"},
+        {"name": "接口设为Hybrid模式", "syntax": "port link-type hybrid", "example": "port link-type hybrid", "description": "设置为Hybrid混合模式", "mode": "接口视图"},
+        {"name": "Hybrid Tagged VLAN", "syntax": "port hybrid vlan <vlan_list> tagged", "example": "port hybrid vlan 10 20 tagged", "description": "Hybrid端口以Tagged方式处理指定VLAN", "mode": "接口视图"},
+        {"name": "Hybrid Untagged VLAN", "syntax": "port hybrid vlan <vlan_list> untagged", "example": "port hybrid vlan 1 untagged", "description": "Hybrid端口以Untagged方式处理指定VLAN", "mode": "接口视图"},
+        {"name": "查看VLAN", "syntax": "display vlan [<vlan_id>]", "example": "display vlan 10", "description": "查看VLAN信息和端口归属", "mode": "任意视图"}
+      ],
+      "keywords": ["vlan", "access", "trunk", "hybrid", "pvid", "port link-type", "port access", "port trunk permit"]
+    },
+    "stp": {
+      "name": "STP/MSTP配置",
+      "commands": [
+        {"name": "启用STP", "syntax": "stp enable", "example": "stp enable", "description": "全局启用生成树", "mode": "系统视图"},
+        {"name": "设置STP模式", "syntax": "stp mode {stp|rstp|mstp|pvst}", "example": "stp mode rstp", "description": "选择生成树协议模式", "mode": "系统视图"},
+        {"name": "配置MST域", "syntax": "stp region-configuration", "example": "stp region-configuration\n  region-name H3C\n  revision-level 1\n  instance 1 vlan 10 20 30\n  active region-configuration", "description": "进入MST域配置视图", "mode": "系统视图"},
+        {"name": "设置根桥", "syntax": "stp root primary", "example": "stp instance 1 root primary", "description": "设置交换机为指定实例的根桥", "mode": "系统视图"},
+        {"name": "设置STP优先级", "syntax": "stp priority <0-61440 step 4096>", "example": "stp priority 4096", "description": "手动设置交换机优先级", "mode": "系统视图"},
+        {"name": "启用边缘端口", "syntax": "stp edged-port enable", "example": "stp edged-port enable", "description": "将接口设为边缘端口", "mode": "接口视图"},
+        {"name": "启用BPDU保护", "syntax": "stp bpdu-protection", "example": "stp bpdu-protection", "description": "全局启用BPDU保护", "mode": "系统视图"},
+        {"name": "查看STP状态", "syntax": "display stp [instance <id>] [brief]", "example": "display stp brief", "description": "查看生成树状态和端口角色", "mode": "任意视图"}
+      ],
+      "keywords": ["stp", "rstp", "mstp", "pvst", "根桥", "边缘端口", "bpdu保护"]
+    },
+    "aggregation": {
+      "name": "链路聚合",
+      "commands": [
+        {"name": "创建聚合接口", "syntax": "interface Bridge-Aggregation <id>", "example": "interface Bridge-Aggregation 1", "description": "创建二层聚合接口", "mode": "系统视图"},
+        {"name": "创建三层聚合接口", "syntax": "interface Route-Aggregation <id>", "example": "interface Route-Aggregation 1", "description": "创建三层聚合接口", "mode": "系统视图"},
+        {"name": "设置聚合模式", "syntax": "link-aggregation mode {static|dynamic}", "example": "link-aggregation mode dynamic", "description": "设置聚合组工作模式：静态/动态LACP", "mode": "聚合接口视图"},
+        {"name": "加入聚合组", "syntax": "port link-aggregation group <id>", "example": "port link-aggregation group 1", "description": "将物理接口加入聚合组", "mode": "物理接口视图"},
+        {"name": "设置负载分担", "syntax": "link-aggregation load-sharing mode {destination-ip|source-ip|source-destination-ip}", "example": "link-aggregation load-sharing mode source-destination-ip", "description": "配置负载分担Hash算法", "mode": "聚合接口视图"},
+        {"name": "查看聚合信息", "syntax": "display link-aggregation [verbose]", "example": "display link-aggregation verbose", "description": "查看链路聚合状态和成员信息", "mode": "任意视图"}
+      ],
+      "keywords": ["链路聚合", "bridge-aggregation", "route-aggregation", "lacp", "link-aggregation", "负载分担"]
+    },
+    "routing": {
+      "name": "路由协议",
+      "commands": [
+        {"name": "配置静态路由", "syntax": "ip route-static <dest_ip> <mask> <next_hop> [preference <value>]", "example": "ip route-static 192.168.2.0 24 10.1.1.1", "description": "添加静态路由", "mode": "系统视图"},
+        {"name": "配置默认路由", "syntax": "ip route-static 0.0.0.0 0 <next_hop>", "example": "ip route-static 0.0.0.0 0 10.1.1.1", "description": "配置默认路由", "mode": "系统视图"},
+        {"name": "启用OSPF", "syntax": "ospf <process_id> [router-id <id>]", "example": "ospf 1 router-id 1.1.1.1", "description": "创建OSPF进程", "mode": "系统视图"},
+        {"name": "进入OSPF区域", "syntax": "area <area_id>", "example": "area 0", "description": "进入OSPF区域视图", "mode": "OSPF视图"},
+        {"name": "宣告网络", "syntax": "network <ip> <wildcard_mask>", "example": "network 10.1.1.0 0.0.0.255", "description": "在OSPF中宣告网络", "mode": "OSPF区域视图"},
+        {"name": "静默接口", "syntax": "silent-interface <interface>", "example": "silent-interface GigabitEthernet1/0/1", "description": "将接口设为静默，不发送OSPF Hello", "mode": "OSPF视图"},
+        {"name": "启用BGP", "syntax": "bgp <as_number>", "example": "bgp 65001", "description": "启用BGP并设置AS号", "mode": "系统视图"},
+        {"name": "配置BGP邻居", "syntax": "peer <ip> as-number <as>", "example": "peer 10.1.1.2 as-number 65002", "description": "配置BGP对等体", "mode": "BGP视图"},
+        {"name": "查看路由表", "syntax": "display ip routing-table", "example": "display ip routing-table", "description": "查看IP路由表", "mode": "任意视图"},
+        {"name": "查看OSPF邻居", "syntax": "display ospf peer [brief]", "example": "display ospf peer brief", "description": "查看OSPF邻居", "mode": "任意视图"}
+      ],
+      "keywords": ["静态路由", "ospf", "bgp", "默认路由", "路由表", "peer", "area", "network"]
+    },
+    "acl": {
+      "name": "ACL/安全配置",
+      "commands": [
+        {"name": "创建基本ACL", "syntax": "acl basic <2000-2999>", "example": "acl basic 2000", "description": "创建基本ACL（仅匹配源IP）", "mode": "系统视图"},
+        {"name": "创建高级ACL", "syntax": "acl advanced <3000-3999>", "example": "acl advanced 3000", "description": "创建高级ACL（匹配五元组）", "mode": "系统视图"},
+        {"name": "基本ACL规则", "syntax": "rule <id> permit|deny source <src_ip> <mask>", "example": "rule 5 permit source 192.168.1.0 0.0.0.255", "description": "创建基本ACL规则", "mode": "ACL视图"},
+        {"name": "高级ACL规则", "syntax": "rule <id> permit|deny <protocol> source <src> <smask> destination <dst> <dmask>", "example": "rule 5 permit tcp source 192.168.1.0 0.0.0.255 destination any destination-port eq 80", "description": "创建高级ACL规则", "mode": "ACL视图"},
+        {"name": "接口应用ACL（包过滤）", "syntax": "packet-filter <acl> {inbound|outbound}", "example": "packet-filter 3000 inbound", "description": "在接口方向应用ACL流量过滤", "mode": "接口视图"},
+        {"name": "端口安全", "syntax": "port-security enable", "example": "port-security enable\n  port-security max-mac-num 5", "description": "启用端口安全限制MAC学习数量", "mode": "接口视图"},
+        {"name": "查看ACL", "syntax": "display acl <id>", "example": "display acl 3000", "description": "查看ACL规则", "mode": "任意视图"}
+      ],
+      "keywords": ["acl", "acl basic", "acl advanced", "packet-filter", "端口安全", "permit", "deny", "rule"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "启用DHCP", "syntax": "dhcp enable", "example": "dhcp enable", "description": "全局启用DHCP服务", "mode": "系统视图"},
+        {"name": "创建地址池", "syntax": "dhcp server ip-pool <name>", "example": "dhcp server ip-pool vlan10", "description": "创建DHCP地址池", "mode": "系统视图"},
+        {"name": "配置地址池网段", "syntax": "network <ip> mask <mask>", "example": "network 192.168.1.0 mask 255.255.255.0", "description": "设置地址池网段", "mode": "地址池视图"},
+        {"name": "配置网关", "syntax": "gateway-list <ip>", "example": "gateway-list 192.168.1.1", "description": "设置默认网关", "mode": "地址池视图"},
+        {"name": "配置DNS", "syntax": "dns-list <ip> [<ip2>]", "example": "dns-list 8.8.8.8 114.114.114.114", "description": "设置DNS服务器", "mode": "地址池视图"},
+        {"name": "地址租约", "syntax": "expired {day <d> hour <h>|unlimited}", "example": "expired day 7", "description": "设置IP租约时间", "mode": "地址池视图"},
+        {"name": "接口应用地址池", "syntax": "dhcp server apply ip-pool <name>", "example": "dhcp server apply ip-pool vlan10", "description": "接口使用指定地址池", "mode": "接口视图"},
+        {"name": "DHCP Snooping", "syntax": "dhcp snooping enable", "example": "dhcp snooping enable", "description": "启用DHCP Snooping", "mode": "系统视图"},
+        {"name": "Trust端口", "syntax": "dhcp snooping trust", "example": "dhcp snooping trust", "description": "设置DHCP Snooping信任端口", "mode": "接口视图"},
+        {"name": "查看地址池", "syntax": "display dhcp server ip-pool [<name>]", "example": "display dhcp server ip-pool vlan10", "description": "查看地址池使用情况", "mode": "任意视图"}
+      ],
+      "keywords": ["dhcp", "地址池", "ip-pool", "dhcp snooping", "网关", "dns", "dhcp relay"]
+    },
+    "vrrp": {
+      "name": "VRRP配置",
+      "commands": [
+        {"name": "创建VRRP组", "syntax": "vrrp vrid <1-255> virtual-ip <ip>", "example": "vrrp vrid 1 virtual-ip 192.168.1.254", "description": "创建VRRP备份组", "mode": "接口视图"},
+        {"name": "设置优先级", "syntax": "vrrp vrid <id> priority <1-254>", "example": "vrrp vrid 1 priority 120", "description": "设置VRRP优先级（默认100）", "mode": "接口视图"},
+        {"name": "抢占模式", "syntax": "vrrp vrid <id> preempt-mode [timer delay <0-3600>]", "example": "vrrp vrid 1 preempt-mode timer delay 30", "description": "启用抢占模式并设置延迟", "mode": "接口视图"},
+        {"name": "VRRP认证", "syntax": "vrrp vrid <id> authentication-mode {simple|md5} <key>", "example": "vrrp vrid 1 authentication-mode simple mykey", "description": "设置VRRP认证", "mode": "接口视图"},
+        {"name": "查看VRRP", "syntax": "display vrrp [brief|verbose]", "example": "display vrrp brief", "description": "查看VRRP备份组状态", "mode": "任意视图"}
+      ],
+      "keywords": ["vrrp", "虚拟网关", "vrid", "优先级", "抢占", "认证"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置主机名", "syntax": "sysname <hostname>", "example": "sysname Core-SW-01", "description": "设置设备主机名", "mode": "系统视图"},
+        {"name": "配置管理VLANIF", "syntax": "interface Vlan-interface <id>\n  ip address <ip> <mask>", "example": "interface Vlan-interface 99\n  ip address 192.168.99.1 24", "description": "配置三层VLAN接口用于管理", "mode": "系统视图"},
+        {"name": "配置SSH", "syntax": "ssh server enable\n  local-user <user> password simple <pass>\n  local-user <user> service-type ssh", "example": "ssh server enable\n  local-user admin password simple P@ssw0rd\n  local-user admin service-type ssh", "description": "启用SSH远程管理", "mode": "系统视图"},
+        {"name": "配置NTP", "syntax": "ntp-service unicast-server <ip>", "example": "ntp-service unicast-server 192.168.1.100", "description": "配置NTP时间同步", "mode": "系统视图"},
+        {"name": "配置SNMP", "syntax": "snmp-agent community read <community>", "example": "snmp-agent community read public", "description": "配置SNMP只读团体字", "mode": "系统视图"},
+        {"name": "保存配置", "syntax": "save [force]", "example": "save force", "description": "保存当前配置（H3C设备必须save否则重启丢失）", "mode": "用户视图"},
+        {"name": "查看当前配置", "syntax": "display current-configuration [| include <filter>]", "example": "display current-configuration | include vlan", "description": "查看当前生效配置", "mode": "任意视图"},
+        {"name": "查看接口状态", "syntax": "display interface [<interface>] brief", "example": "display interface brief", "description": "查看所有接口简要信息", "mode": "任意视图"},
+        {"name": "查看LLDP邻居", "syntax": "display lldp neighbor-information list", "example": "display lldp neighbor-information list", "description": "查看LLDP发现的邻居设备", "mode": "任意视图"},
+        {"name": "查看日志", "syntax": "display logbuffer [reverse] [size <n>]", "example": "display logbuffer reverse size 50", "description": "查看系统日志", "mode": "任意视图"},
+        {"name": "查看MAC地址表", "syntax": "display mac-address [vlan <vlan_id>]", "example": "display mac-address vlan 10", "description": "查看MAC地址表", "mode": "任意视图"},
+        {"name": "查看ARP表", "syntax": "display arp [all]", "example": "display arp all", "description": "查看ARP表", "mode": "任意视图"}
+      ],
+      "keywords": ["sysname", "管理", "ssh", "ntp", "snmp", "save", "display", "lldp", "日志", "mac地址", "arp"]
+    }
+  }
+}

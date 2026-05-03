@@ -1,0 +1,107 @@
+{
+  "vendor": "Dell",
+  "categories": {
+    "vlan": {
+      "name": "VLAN配置",
+      "commands": [
+        {"name": "进入配置模式", "syntax": "configure terminal", "example": "configure terminal", "description": "进入全局配置模式", "mode": "特权模式"},
+        {"name": "创建VLAN", "syntax": "vlan <vlan_id>\n  name <vlan_name>", "example": "vlan 10\n  name Management", "description": "创建VLAN并命名", "mode": "全局配置"},
+        {"name": "接口Access模式", "syntax": "switchport mode access\n  switchport access vlan <vlan_id>", "example": "switchport mode access\n  switchport access vlan 10", "description": "将接口设为Access模式", "mode": "接口配置"},
+        {"name": "接口Trunk模式", "syntax": "switchport mode trunk\n  switchport trunk allowed vlan <vlan_list>", "example": "switchport mode trunk\n  switchport trunk allowed vlan all", "description": "将接口设为Trunk模式", "mode": "接口配置"},
+        {"name": "Native VLAN", "syntax": "switchport trunk native vlan <vlan_id>", "example": "switchport trunk native vlan 1", "description": "设置Trunk端口的Native VLAN", "mode": "接口配置"},
+        {"name": "接口General模式", "syntax": "switchport mode general\n  switchport general allowed vlan add <vlan_id> {tagged|untagged}", "example": "switchport mode general\n  switchport general allowed vlan add 10 tagged\n  switchport general allowed vlan add 1 untagged", "description": "Dell特有的General模式（类似Hybrid）", "mode": "接口配置"},
+        {"name": "三层接口", "syntax": "no switchport\n  ip address <ip> <mask>", "example": "no switchport\n  ip address 10.1.1.1 255.255.255.252", "description": "将二层口转为三层路由口", "mode": "接口配置"},
+        {"name": "查看VLAN", "syntax": "show vlan [id <vlan_id>|brief]", "example": "show vlan brief", "description": "查看VLAN信息", "mode": "特权模式"}
+      ],
+      "keywords": ["vlan", "switchport", "access", "trunk", "general", "native", "allowed", "tagged", "untagged"]
+    },
+    "stp": {
+      "name": "STP/MSTP配置",
+      "commands": [
+        {"name": "启用STP", "syntax": "spanning-tree", "example": "spanning-tree", "description": "全局启用生成树（默认RSTP）", "mode": "全局配置"},
+        {"name": "设置模式", "syntax": "spanning-tree mode {stp|rstp|mstp}", "example": "spanning-tree mode rstp", "description": "选择STP协议版本", "mode": "全局配置"},
+        {"name": "设置优先级", "syntax": "spanning-tree priority <0-61440>", "example": "spanning-tree priority 4096", "description": "设置桥优先级", "mode": "全局配置"},
+        {"name": "配置MST", "syntax": "spanning-tree mst configuration\n  name <region_name>\n  revision <level>\n  instance <id> vlan <vlan_list>", "example": "spanning-tree mst configuration\n  name REGION1\n  revision 1\n  instance 1 vlan 10,20", "description": "配置MST域", "mode": "全局配置"},
+        {"name": "边缘端口", "syntax": "spanning-tree portfast", "example": "spanning-tree portfast", "description": "将接口设为边缘端口", "mode": "接口配置"},
+        {"name": "BPDU Guard", "syntax": "spanning-tree bpduguard enable", "example": "spanning-tree bpduguard enable", "description": "启用BPDU Guard", "mode": "全局配置"},
+        {"name": "查看STP", "syntax": "show spanning-tree [detail|active]", "example": "show spanning-tree detail", "description": "查看生成树状态", "mode": "特权模式"}
+      ],
+      "keywords": ["spanning-tree", "stp", "rstp", "mstp", "portfast", "bpduguard", "优先级"]
+    },
+    "aggregation": {
+      "name": "链路聚合",
+      "commands": [
+        {"name": "创建Port-Channel", "syntax": "interface port-channel <id>", "example": "interface port-channel 1", "description": "创建Port-Channel逻辑接口", "mode": "全局配置"},
+        {"name": "加入Port-Channel", "syntax": "channel-group <id> mode {active|passive|on}", "example": "channel-group 1 mode active", "description": "将物理接口加入聚合组", "mode": "接口配置"},
+        {"name": "负载均衡", "syntax": "port-channel load-balance {src-mac|dst-mac|src-dst-mac|src-ip|dst-ip|src-dst-ip}", "example": "port-channel load-balance src-dst-ip", "description": "配置负载均衡算法", "mode": "全局配置"},
+        {"name": "LACP优先级", "syntax": "lacp system-priority <1-65535>", "example": "lacp system-priority 100", "description": "设置LACP系统优先级", "mode": "全局配置"},
+        {"name": "查看Port-Channel", "syntax": "show interfaces port-channel [<id>] [brief]", "example": "show interfaces port-channel brief", "description": "查看聚合接口状态", "mode": "特权模式"}
+      ],
+      "keywords": ["端口聚合", "port-channel", "lacp", "channel-group", "链路聚合", "负载均衡"]
+    },
+    "routing": {
+      "name": "路由协议",
+      "commands": [
+        {"name": "静态路由", "syntax": "ip route <dest_ip> <mask> <next_hop> [<distance>]", "example": "ip route 192.168.2.0 255.255.255.0 10.1.1.1", "description": "添加静态路由", "mode": "全局配置"},
+        {"name": "默认路由", "syntax": "ip route 0.0.0.0 0.0.0.0 <next_hop>", "example": "ip route 0.0.0.0 0.0.0.0 10.1.1.254", "description": "配置默认路由", "mode": "全局配置"},
+        {"name": "启用OSPF", "syntax": "router ospf <process_id>\n  router-id <id>", "example": "router ospf 1\n  router-id 1.1.1.1", "description": "创建OSPF进程", "mode": "全局配置"},
+        {"name": "宣告OSPF网络", "syntax": "network <ip> <wildcard> area <area_id>", "example": "network 10.1.1.0 0.0.0.255 area 0", "description": "宣告OSPF网络", "mode": "OSPF路由配置"},
+        {"name": "被动接口", "syntax": "passive-interface <interface>", "example": "passive-interface vlan 10", "description": "设置OSPF被动接口", "mode": "OSPF路由配置"},
+        {"name": "启用BGP", "syntax": "router bgp <as_number>", "example": "router bgp 65001", "description": "启用BGP", "mode": "全局配置"},
+        {"name": "BGP邻居", "syntax": "neighbor <ip> remote-as <as>", "example": "neighbor 10.1.1.2 remote-as 65002", "description": "配置BGP对等体", "mode": "BGP路由配置"},
+        {"name": "查看路由表", "syntax": "show ip route [static|ospf|bgp|summary]", "example": "show ip route", "description": "查看IP路由表", "mode": "特权模式"}
+      ],
+      "keywords": ["静态路由", "ospf", "bgp", "router-id", "passive-interface", "路由表", "ip route"]
+    },
+    "acl": {
+      "name": "ACL/安全配置",
+      "commands": [
+        {"name": "创建MAC ACL", "syntax": "mac access-list extended <name>\n  <seq> permit|deny any any", "example": "mac access-list extended MAC_FILTER\n  10 deny host 00:11:22:33:44:55 any", "description": "创建MAC ACL", "mode": "全局配置"},
+        {"name": "创建IP ACL", "syntax": "ip access-list <name>\n  <seq> permit|deny <protocol> <src> <dst>", "example": "ip access-list BLOCK_WEB\n  10 deny tcp any any eq 80", "description": "创建命名IP ACL", "mode": "全局配置"},
+        {"name": "接口应用ACL", "syntax": "ip access-group <acl_name> {in|out}", "example": "ip access-group BLOCK_WEB in", "description": "在接口方向应用ACL", "mode": "接口配置"},
+        {"name": "端口安全", "syntax": "switchport port-security\n  switchport port-security max <n>\n  switchport port-security mac-address sticky", "example": "switchport port-security\n  switchport port-security max 5", "description": "启用端口安全", "mode": "接口配置"},
+        {"name": "查看ACL", "syntax": "show access-lists [<name>]", "example": "show access-lists BLOCK_WEB", "description": "查看ACL规则", "mode": "特权模式"}
+      ],
+      "keywords": ["acl", "access-list", "access-group", "端口安全", "port-security", "permit", "deny", "mac access-list"]
+    },
+    "dhcp": {
+      "name": "DHCP配置",
+      "commands": [
+        {"name": "创建地址池", "syntax": "ip dhcp pool <name>\n  network <ip> <mask>\n  default-router <ip>\n  dns-server <ip>\n  lease {infinite|<days>}", "example": "ip dhcp pool VLAN10\n  network 192.168.1.0 255.255.255.0\n  default-router 192.168.1.1\n  dns-server 8.8.8.8", "description": "创建DHCP地址池", "mode": "全局配置"},
+        {"name": "排除地址", "syntax": "ip dhcp excluded-address <start_ip> [<end_ip>]", "example": "ip dhcp excluded-address 192.168.1.1 192.168.1.10", "description": "排除不分配的地址", "mode": "全局配置"},
+        {"name": "DHCP中继", "syntax": "ip helper-address <dhcp_server>", "example": "ip helper-address 192.168.1.10", "description": "在VLAN接口启用DHCP中继", "mode": "接口配置"},
+        {"name": "DHCP Snooping", "syntax": "ip dhcp snooping\n  ip dhcp snooping vlan <vlan_id>", "example": "ip dhcp snooping\n  ip dhcp snooping vlan 10", "description": "启用DHCP Snooping", "mode": "全局配置"},
+        {"name": "查看DHCP绑定", "syntax": "show ip dhcp binding", "example": "show ip dhcp binding", "description": "查看DHCP地址分配", "mode": "特权模式"}
+      ],
+      "keywords": ["dhcp", "地址池", "ip dhcp pool", "ip helper-address", "dhcp snooping", "排除地址"]
+    },
+    "vrrp": {
+      "name": "VRRP配置",
+      "commands": [
+        {"name": "创建VRRP", "syntax": "vrrp <group_id> ip <virtual_ip>", "example": "vrrp 1 ip 192.168.1.254", "description": "创建VRRP备份组", "mode": "接口配置"},
+        {"name": "设置优先级", "syntax": "vrrp <group_id> priority <1-254>", "example": "vrrp 1 priority 120", "description": "设置VRRP优先级", "mode": "接口配置"},
+        {"name": "抢占", "syntax": "vrrp <group_id> preempt [delay minimum <seconds>]", "example": "vrrp 1 preempt delay minimum 30", "description": "启用VRRP抢占", "mode": "接口配置"},
+        {"name": "查看VRRP", "syntax": "show vrrp [<group_id>|brief]", "example": "show vrrp brief", "description": "查看VRRP状态", "mode": "特权模式"}
+      ],
+      "keywords": ["vrrp", "虚拟网关", "vrrp group", "优先级", "抢占", "virtual-ip"]
+    },
+    "management": {
+      "name": "管理运维",
+      "commands": [
+        {"name": "设置主机名", "syntax": "hostname <name>", "example": "hostname Core-SW-01", "description": "设置设备主机名", "mode": "全局配置"},
+        {"name": "配置管理接口", "syntax": "interface out-of-band\n  ip address <ip> <mask>", "example": "interface out-of-band\n  ip address 192.168.1.1 255.255.255.0", "description": "配置Dell带外管理口（OOB）", "mode": "全局配置"},
+        {"name": "配置SSH", "syntax": "crypto key generate rsa\n  ip ssh server enable\n  username <user> password <pass> privilege 15", "example": "crypto key generate rsa\n  ip ssh server enable\n  username admin password P@ssw0rd privilege 15", "description": "启用SSH远程管理", "mode": "全局配置"},
+        {"name": "配置NTP", "syntax": "ntp server <ip> [prefer]", "example": "ntp server 192.168.1.100 prefer", "description": "配置NTP服务器", "mode": "全局配置"},
+        {"name": "配置SNMP", "syntax": "snmp-server community <community> ro", "example": "snmp-server community public ro", "description": "配置SNMP只读团体字", "mode": "全局配置"},
+        {"name": "保存配置", "syntax": "copy running-config startup-config", "example": "copy running-config startup-config", "description": "保存当前配置", "mode": "特权模式"},
+        {"name": "查看运行配置", "syntax": "show running-config [interface <intf>]", "example": "show running-config", "description": "查看运行配置", "mode": "特权模式"},
+        {"name": "查看接口", "syntax": "show interfaces [<interface>] status", "example": "show interfaces status", "description": "查看接口状态", "mode": "特权模式"},
+        {"name": "查看LLDP", "syntax": "show lldp neighbors [detail]", "example": "show lldp neighbors detail", "description": "查看LLDP邻居", "mode": "特权模式"},
+        {"name": "查看日志", "syntax": "show logging [buffered|last <lines>]", "example": "show logging last 50", "description": "查看系统日志", "mode": "特权模式"},
+        {"name": "查看MAC表", "syntax": "show mac address-table [vlan <vlan_id>]", "example": "show mac address-table vlan 10", "description": "查看MAC地址表", "mode": "特权模式"},
+        {"name": "查看ARP", "syntax": "show arp", "example": "show arp", "description": "查看ARP表", "mode": "特权模式"}
+      ],
+      "keywords": ["hostname", "管理", "out-of-band", "ssh", "ntp", "snmp", "保存", "running-config", "lldp", "日志", "mac address-table"]
+    }
+  }
+}
